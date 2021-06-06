@@ -1,0 +1,15 @@
+.feedItem {
+    padding: 10px;
+}
+
+.feedItem .textField {
+    margin: 5px;
+}
+
+.feedItem .header {
+    text-align: right;
+}
+
+.feedItem .footer {
+    text-align: right;
+}
