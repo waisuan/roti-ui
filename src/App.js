@@ -15,7 +15,3 @@ class App extends Component {
 }
 
 export default App;
-
-// Feed
-// - FeedItem
-//   - History
