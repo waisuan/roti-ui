@@ -6,8 +6,12 @@
     margin: 5px;
 }
 
-.feedItem .header {
+.feedItem .header-right {
     text-align: right;
+}
+
+.feedItem .header-left {
+    float: left;
 }
 
 .feedItem .footer {

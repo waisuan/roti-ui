@@ -7,42 +7,43 @@ class Feed extends Component {
     constructor(props) {
         super(props);
         this.state = { data: [{
-            serialNumber: 'S001', 
-            customer: 'Evan', 
-            state: 'State', 
-            district: 'District',
-            accountType: 'Type',
-            model: 'Model',
-            brand: 'Brand',
-            status: 'Status',
-            tncDate: '2021-01-01',
-            ppmDate: '2021-12-31',
-            reportedBy: 'Reporter',
-            personInCharge: 'Person',
-            createdOn: '2019-01-01',
-            updatedOn: '2019-12-31'
-        },
-        {
-            serialNumber: 'S002', 
-            customer: 'Evan', 
-            state: 'State', 
-            district: 'District',
-            accountType: 'Type',
-            model: 'Model',
-            brand: 'Brand',
-            status: 'Status',
-            tncDate: '2021-01-01',
-            ppmDate: '2021-12-31',
-            reportedBy: 'Reporter',
-            personInCharge: 'Person',
-            createdOn: '2019-01-01',
-            updatedOn: '2019-12-31'
-        }],
-        clonedData: {}
-    };
+                serialNumber: 'S001', 
+                customer: 'Evan', 
+                state: 'State', 
+                district: 'District',
+                accountType: 'Type',
+                model: 'Model',
+                brand: 'Brand',
+                status: 'Status',
+                tncDate: '2021-01-01',
+                ppmDate: '2021-12-31',
+                reportedBy: 'Reporter',
+                personInCharge: 'Person',
+                createdOn: '2019-01-01',
+                updatedOn: '2019-12-31'
+            },
+            {
+                serialNumber: 'S002', 
+                customer: 'Evan', 
+                state: 'State', 
+                district: 'District',
+                accountType: 'Type',
+                model: 'Model',
+                brand: 'Brand',
+                status: 'Status',
+                tncDate: '2021-01-01',
+                ppmDate: '2021-12-31',
+                reportedBy: 'Reporter',
+                personInCharge: 'Person',
+                createdOn: '2019-01-01',
+                updatedOn: '2019-12-31'
+            }],
+            clonedData: {}
+        };
 
         this.handleItemChange = this.handleItemChange.bind(this);
-        this.handleCancelChange = this.handleCancelChange.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
+        this.handleSaveEdit = this.handleSaveEdit.bind(this);
     }
 
     handleItemChange(key, value, index) {
@@ -61,7 +62,7 @@ class Feed extends Component {
         }));
     }
 
-    handleCancelChange(index) {
+    handleCancel(index) {
         if (index in this.state.clonedData) {
             this.setState(prevState => ({
                 data: [
@@ -70,18 +71,34 @@ class Feed extends Component {
                     ...prevState.data.slice(index+1)
                 ]
             }), () => { 
-                const tmp = {...this.state.clonedData}
-                delete tmp[index];
-                this.setState({clonedData: tmp});
+                this.removeFromClonedData(index);
             });
         }
+    }
+
+    handleSaveEdit(index) {
+        if (index in this.state.clonedData) {
+            this.removeFromClonedData(index);
+        }
+    }
+
+    removeFromClonedData(index) {
+        const tmp = {...this.state.clonedData}
+        delete tmp[index];
+        this.setState({clonedData: tmp});
     }
 
     render() {
         const feedItems = this.state.data.map((rec, index) => {
             return (
                 <Grid key={rec.serialNumber} item xs={12}>
-                    <FeedItem index={index} item={rec} onItemChange={this.handleItemChange} onCancelChange={this.handleCancelChange}/>
+                    <FeedItem 
+                        index={index} 
+                        item={rec} 
+                        onItemChange={this.handleItemChange} 
+                        onCancel={this.handleCancel}
+                        onSaveEdit={this.handleSaveEdit}
+                    />
                 </Grid>
             );
         });

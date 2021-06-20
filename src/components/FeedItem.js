@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
 import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
 import dayjs from 'dayjs';
-import DayJsUtils from '@date-io/dayjs';
-import {MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
 
 import FeedItemDefaultHeader from './FeedItemDefaultHeader';
 import FeedItemEditHeader from './FeedItemEditHeader';
 import FeedItemDefaultFooter from './FeedItemDefaultFooter';
+import FeedItemForm from './FeedItemForm';
 import './FeedItem.css';
-import { ContactSupportOutlined } from '@material-ui/icons';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 
@@ -24,8 +20,9 @@ class FeedItem extends Component {
 
         this.handleEditState = this.handleEditState.bind(this);
         this.handleItemChange = this.handleItemChange.bind(this);
-        this.handleCancelChange = this.handleCancelChange.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
+        this.handleSaveEdit = this.handleSaveEdit.bind(this);
     }
 
     handleEditState() {
@@ -36,8 +33,13 @@ class FeedItem extends Component {
         this.props.onItemChange(e.target.id, e.target.value, this.props.index);
     }
 
-    handleCancelChange(_) {
-        this.props.onCancelChange(this.props.index);
+    handleCancel(_) {
+        this.props.onCancel(this.props.index);
+        this.setState({formState: "default", fieldErrors: {}});
+    }
+
+    handleSaveEdit(_) {
+        this.props.onSaveEdit(this.props.index);
         this.setState({formState: "default", fieldErrors: {}});
     }
 
@@ -63,200 +65,24 @@ class FeedItem extends Component {
         const isEditMode = this.state.formState === "edit";
         const isSaveDisabled = Object.keys(this.state.fieldErrors).length !== 0;
 
-        const header = () => {
-            if (isReadOnly) {
-                return <FeedItemDefaultHeader handleEditState={this.handleEditState}/>
-            } else {
-                return <FeedItemEditHeader handleCancelChange={this.handleCancelChange} isSaveDisabled={isSaveDisabled}/>;
-            }
-        };
+        let header;
+        if (isReadOnly) {
+            header = <FeedItemDefaultHeader handleEditState={this.handleEditState}/>;
+        } else {
+            header = <FeedItemEditHeader handleCancel={this.handleCancel} isSaveDisabled={isSaveDisabled} handleSaveEdit={this.handleSaveEdit}/>;
+        }
 
         return (
             <Paper className="feedItem">
-                {header()}
-                <form>
-                    <Grid container>
-                        <Grid item xs>
-                            <TextField
-                                id="serialNumber"
-                                label="Serial No."
-                                defaultValue={this.props.item.serialNumber}
-                                variant="outlined"
-                                size="small"
-                                disabled
-                                className="textField"
-                            />
-                        </Grid>
-                        <Grid item xs>
-                            <TextField
-                                id="customer"
-                                label="Customer"
-                                value={this.props.item.customer}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: !isEditMode,
-                                }}
-                                className="textField"
-                                onChange={this.handleItemChange}
-                            />
-                        </Grid>
-                        <Grid item xs>
-                            <TextField
-                                id="state"
-                                label="State"
-                                value={this.props.item.state}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: !isEditMode,
-                                }}
-                                className="textField"
-                                onChange={this.handleItemChange}
-                            />
-                        </Grid>
-                        <Grid item xs>
-                            <TextField
-                                id="district"
-                                label="District"
-                                value={this.props.item.district}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: !isEditMode,
-                                }}
-                                className="textField"
-                                onChange={this.handleItemChange}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid container>
-                        <Grid item xs>
-                            <TextField
-                                id="accountType"
-                                label="Type"
-                                value={this.props.item.accountType}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: !isEditMode,
-                                }}
-                                className="textField"
-                                onChange={this.handleItemChange}
-                            />
-                        </Grid>
-                        <Grid item xs>
-                            <TextField
-                                id="model"
-                                label="Model"
-                                value={this.props.item.model}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: !isEditMode,
-                                }}
-                                className="textField"
-                                onChange={this.handleItemChange}
-                            />
-                        </Grid>
-                        <Grid item xs>
-                            <TextField
-                                id="brand"
-                                label="Brand"
-                                value={this.props.item.brand}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: !isEditMode,
-                                }}
-                                className="textField"
-                                onChange={this.handleItemChange}
-                            />
-                        </Grid>
-                        <Grid item xs>
-                            <TextField
-                                id="status"
-                                label="Status"
-                                value={this.props.item.status}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: !isEditMode,
-                                }}
-                                className="textField"
-                                onChange={this.handleItemChange}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid container>
-                        <Grid item xs>
-                            <MuiPickersUtilsProvider utils={DayJsUtils}>
-                                <KeyboardDatePicker
-                                    id="tncDate"
-                                    label="TNC Date"
-                                    value={this.props.item.tncDate}
-                                    format={DATE_FORMAT}
-                                    variant="inline"
-                                    inputVariant="outlined"
-                                    margin="dense"
-                                    disableToolbar
-                                    autoOk
-                                    className="textField"
-                                    readOnly={!isEditMode}
-                                    onChange={(_, date) => {this.handleDateChange(date, "tncDate");}}
-                                    error={"tncDate" in this.state.fieldErrors}
-                                />
-                            </MuiPickersUtilsProvider>
-                        </Grid>
-                        <Grid item xs>
-                            <MuiPickersUtilsProvider utils={DayJsUtils}>
-                                <KeyboardDatePicker
-                                    id="ppmDate"
-                                    label="PPM Date"
-                                    value={this.props.item.ppmDate}
-                                    format={DATE_FORMAT}
-                                    variant="inline"
-                                    inputVariant="outlined"
-                                    margin="dense"
-                                    disableToolbar
-                                    autoOk
-                                    className="textField"
-                                    readOnly={!isEditMode}
-                                    onChange={(_, date) => {this.handleDateChange(date, "ppmDate");}}
-                                    error={"ppmDate" in this.state.fieldErrors}
-                                />
-                            </MuiPickersUtilsProvider>
-                        </Grid>
-                        <Grid item xs>
-                            <TextField
-                                id="reportedBy"
-                                label="Reported By"
-                                value={this.props.item.reportedBy}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: !isEditMode,
-                                }}
-                                className="textField"
-                                onChange={this.handleItemChange}
-                            />
-                        </Grid>
-                        <Grid item xs>
-                            <TextField
-                                id="personInCharge"
-                                label="Assignee"
-                                value={this.props.item.personInCharge}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: !isEditMode,
-                                }}
-                                className="textField"
-                                onChange={this.handleItemChange}
-                            />
-                        </Grid>
-                    </Grid>
-                </form>
+                {header}
+                <FeedItemForm 
+                    item={this.props.item}
+                    isReadOnly={!isEditMode}
+                    dateFormat={DATE_FORMAT}
+                    fieldErrors={this.state.fieldErrors}
+                    handleItemChange={this.handleItemChange}
+                    handleDateChange={this.handleDateChange}
+                />
                 <FeedItemDefaultFooter createdOn={this.props.item.createdOn} updatedOn={this.props.item.updatedOn}/>
             </Paper>
         );

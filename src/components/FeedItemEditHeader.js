@@ -8,17 +8,17 @@ import './FeedItem.css';
 
 export default function FeedItemEditHeader(props) {
     return (
-        <div className="header">
+        <div className="header-right">
             <Typography variant="caption" color="textSecondary">
                 Editing...
             </Typography>
             <Tooltip title="Save">
-                <IconButton size="small" color="primary" aria-label="save" disabled={props.isSaveDisabled}>
+                <IconButton size="small" color="primary" aria-label="save" disabled={props.isSaveDisabled} onClick={props.handleSaveEdit}>
                     <SaveIcon fontSize="inherit"/>
                 </IconButton>
             </Tooltip>
             <Tooltip title="Cancel">
-                <IconButton size="small" color="secondary" aria-label="cancel"  onClick={props.handleCancelChange}>
+                <IconButton size="small" color="secondary" aria-label="cancel"  onClick={props.handleCancel}>
                     <CancelIcon fontSize="inherit"/>
                 </IconButton>
             </Tooltip>
