@@ -44,6 +44,7 @@ class Feed extends Component {
         this.handleItemChange = this.handleItemChange.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleSaveEdit = this.handleSaveEdit.bind(this);
+        this.handleSaveDelete = this.handleSaveDelete.bind(this);
     }
 
     handleItemChange(key, value, index) {
@@ -82,6 +83,15 @@ class Feed extends Component {
         }
     }
 
+    handleSaveDelete(index) {
+        const tmp = [...this.state.data];
+        tmp.splice(index, 1);
+        this.setState({data: tmp});
+        if (index in this.state.clonedData) {
+            this.removeFromClonedData(index);
+        }
+    }
+
     removeFromClonedData(index) {
         const tmp = {...this.state.clonedData}
         delete tmp[index];
@@ -98,6 +108,7 @@ class Feed extends Component {
                         onItemChange={this.handleItemChange} 
                         onCancel={this.handleCancel}
                         onSaveEdit={this.handleSaveEdit}
+                        onSaveDelete={this.handleSaveDelete}
                     />
                 </Grid>
             );

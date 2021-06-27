@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 
 import FeedItemDefaultHeader from './FeedItemDefaultHeader';
 import FeedItemEditHeader from './FeedItemEditHeader';
+import FeedItemDeleteHeader from './FeedItemDeleteHeader';
 import FeedItemDefaultFooter from './FeedItemDefaultFooter';
 import FeedItemForm from './FeedItemForm';
 import './FeedItem.css';
@@ -19,14 +20,20 @@ class FeedItem extends Component {
         };
 
         this.handleEditState = this.handleEditState.bind(this);
+        this.handleDelState = this.handleDelState.bind(this);
         this.handleItemChange = this.handleItemChange.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
         this.handleSaveEdit = this.handleSaveEdit.bind(this);
+        this.handleSaveDelete = this.handleSaveDelete.bind(this);
     }
 
     handleEditState() {
         this.setState({formState: "edit"});
+    }
+
+    handleDelState() {
+        this.setState({formState: "delete"});
     }
 
     handleItemChange(e) {
@@ -41,6 +48,10 @@ class FeedItem extends Component {
     handleSaveEdit(_) {
         this.props.onSaveEdit(this.props.index);
         this.setState({formState: "default", fieldErrors: {}});
+    }
+
+    handleSaveDelete(_) {
+        this.props.onSaveDelete(this.props.index);
     }
 
     handleDateChange(date, fieldName) {
@@ -61,15 +72,17 @@ class FeedItem extends Component {
     }
 
     render() {
-        const isReadOnly = this.state.formState === "default";
         const isEditMode = this.state.formState === "edit";
+        const isDelMode = this.state.formState === "delete";
         const isSaveDisabled = Object.keys(this.state.fieldErrors).length !== 0;
 
         let header;
-        if (isReadOnly) {
-            header = <FeedItemDefaultHeader handleEditState={this.handleEditState}/>;
-        } else {
+        if (isEditMode) {
             header = <FeedItemEditHeader handleCancel={this.handleCancel} isSaveDisabled={isSaveDisabled} handleSaveEdit={this.handleSaveEdit}/>;
+        } else if (isDelMode) {
+            header = <FeedItemDeleteHeader handleCancel={this.handleCancel} handleSaveDelete={this.handleSaveDelete}/>;
+        } else {
+            header = <FeedItemDefaultHeader handleEditState={this.handleEditState} handleDelState={this.handleDelState}/>;
         }
 
         return (

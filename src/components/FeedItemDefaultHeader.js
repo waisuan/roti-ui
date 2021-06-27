@@ -24,7 +24,7 @@ export default function FeedItemDefaultHeader(props) {
                     </IconButton>
                 </Tooltip>
                 <Tooltip title="Delete">
-                    <IconButton size="small" color="secondary" aria-label="delete">
+                    <IconButton size="small" color="secondary" aria-label="delete" onClick={props.handleDelState}>
                         <DeleteForeverIcon fontSize="inherit"/>
                     </IconButton>
                 </Tooltip>
