@@ -136,7 +136,7 @@ export default function FeedItemForm(props) {
                             autoOk
                             className="textField"
                             readOnly={props.isReadOnly}
-                            onChange={(_, date) => {props.handleDateChange(date, "tncDate");}}
+                            onChange={(_, date) => { props.handleDateChange(date, "tncDate"); }}
                             error={"tncDate" in props.fieldErrors}
                         />
                     </MuiPickersUtilsProvider>
@@ -155,7 +155,7 @@ export default function FeedItemForm(props) {
                             autoOk
                             className="textField"
                             readOnly={props.isReadOnly}
-                            onChange={(_, date) => {props.handleDateChange(date, "ppmDate");}}
+                            onChange={(_, date) => { props.handleDateChange(date, "ppmDate"); }}
                             error={"ppmDate" in props.fieldErrors}
                         />
                     </MuiPickersUtilsProvider>

@@ -7,12 +7,12 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
 import './FeedItem.css';
 
-export default function FeedItemDefaultHeader(props) {
+export default function FeedItemFormHeader(props) {
     return (
         <div>
             <div className="header-left">
                 <Tooltip title="Collapse">
-                    <IconButton size="small" aria-label="collapse">
+                    <IconButton size="small" aria-label="collapse" onClick={props.handleCollapse}>
                         <ExpandLessIcon fontSize="inherit"/>
                     </IconButton>
                 </Tooltip>

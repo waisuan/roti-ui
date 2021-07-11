@@ -14,6 +14,24 @@
     float: left;
 }
 
-.feedItem .footer {
+.feedItem .uncollapsed-footer {
     text-align: right;
+}
+
+.feedItem .collapsed {
+    text-align: center;
+}
+
+.feedItem .collapsed-footer {
+    text-align: center;
+}
+
+.feedItem .uncollapsed-footer .footer-left,
+.feedItem .collapsed-footer .footer-left {
+    color: teal;
+}
+
+.feedItem .uncollapsed-footer .footer-right,
+.feedItem .collapsed-footer .footer-right {
+    color: orangered;
 }

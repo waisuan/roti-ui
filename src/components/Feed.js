@@ -1,43 +1,17 @@
 import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
 import FeedItem from './FeedItem';
+
+import data from '../data/machines.json';
 
 class Feed extends Component {
     constructor(props) {
         super(props);
-        this.state = { data: [{
-                serialNumber: 'S001', 
-                customer: 'Evan', 
-                state: 'State', 
-                district: 'District',
-                accountType: 'Type',
-                model: 'Model',
-                brand: 'Brand',
-                status: 'Status',
-                tncDate: '2021-01-01',
-                ppmDate: '2021-12-31',
-                reportedBy: 'Reporter',
-                personInCharge: 'Person',
-                createdOn: '2019-01-01',
-                updatedOn: '2019-12-31'
-            },
-            {
-                serialNumber: 'S002', 
-                customer: 'Evan', 
-                state: 'State', 
-                district: 'District',
-                accountType: 'Type',
-                model: 'Model',
-                brand: 'Brand',
-                status: 'Status',
-                tncDate: '2021-01-01',
-                ppmDate: '2021-12-31',
-                reportedBy: 'Reporter',
-                personInCharge: 'Person',
-                createdOn: '2019-01-01',
-                updatedOn: '2019-12-31'
-            }],
+
+        this.state = { 
+            data: data,
             clonedData: {}
         };
 
@@ -103,18 +77,23 @@ class Feed extends Component {
             return (
                 <Grid key={rec.serialNumber} item xs={12}>
                     <FeedItem 
-                        index={index} 
-                        item={rec} 
-                        onItemChange={this.handleItemChange} 
-                        onCancel={this.handleCancel}
-                        onSaveEdit={this.handleSaveEdit}
-                        onSaveDelete={this.handleSaveDelete}
+                        index={index}
+                        item={rec}
+                        onItemChange={(k, v) => { this.handleItemChange(k, v, index); }} 
+                        onCancel={() => { this.handleCancel(index); }}
+                        onSaveEdit={() => { this.handleSaveEdit(index); }}
+                        onSaveDelete={() => { this.handleSaveDelete(index); }}
                     />
                 </Grid>
             );
         });
         return (
             <Grid container spacing={1}>
+                {/* <Grid item xs>
+                    <Typography variant="caption" color="textSecondary">
+                        Add...
+                    </Typography>
+                </Grid> */}
                 {feedItems}
             </Grid>
         );
