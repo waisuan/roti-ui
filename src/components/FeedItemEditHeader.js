@@ -4,14 +4,14 @@ import IconButton from '@material-ui/core/IconButton';
 import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
 
-import './FeedItem.css';
-
 export default function FeedItemEditHeader(props) {
     return (
         <div className="header-right">
-            <Typography variant="caption" color="textSecondary">
-                Editing...
-            </Typography>
+            {!props.isNew && 
+                <Typography variant="caption" color="textSecondary">
+                    Editing...
+                </Typography>
+            }
             <Tooltip title="Save">
                 <IconButton size="small" color="primary" aria-label="save" disabled={props.isSaveDisabled} onClick={props.handleSaveEdit}>
                     <SaveIcon fontSize="inherit"/>

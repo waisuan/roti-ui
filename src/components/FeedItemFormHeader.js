@@ -5,8 +5,6 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
-import './FeedItem.css';
-
 export default function FeedItemFormHeader(props) {
     return (
         <div>

@@ -3,9 +3,10 @@ import TextField from '@material-ui/core/TextField';
 import DayJsUtils from '@date-io/dayjs';
 import {MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
 
-import './FeedItem.css';
-
 export default function FeedItemForm(props) {
+    const isNew = props.formState === "new";
+    const isReadOnly = props.formState !== "edit" && !isNew;
+
     return (
         <form>
             <Grid container>
@@ -16,8 +17,10 @@ export default function FeedItemForm(props) {
                         defaultValue={props.item.serialNumber}
                         variant="outlined"
                         size="small"
-                        disabled
+                        disabled={!isNew}
                         className="textField"
+                        required={isNew}
+                        autoFocus={isNew}
                     />
                 </Grid>
                 <Grid item xs>
@@ -28,7 +31,7 @@ export default function FeedItemForm(props) {
                         variant="outlined"
                         size="small"
                         InputProps={{
-                            readOnly: props.isReadOnly,
+                            readOnly: isReadOnly,
                         }}
                         className="textField"
                         onChange={props.handleItemChange}
@@ -42,7 +45,7 @@ export default function FeedItemForm(props) {
                         variant="outlined"
                         size="small"
                         InputProps={{
-                            readOnly: props.isReadOnly,
+                            readOnly: isReadOnly,
                         }}
                         className="textField"
                         onChange={props.handleItemChange}
@@ -56,7 +59,7 @@ export default function FeedItemForm(props) {
                         variant="outlined"
                         size="small"
                         InputProps={{
-                            readOnly: props.isReadOnly,
+                            readOnly: isReadOnly,
                         }}
                         className="textField"
                         onChange={props.handleItemChange}
@@ -72,7 +75,7 @@ export default function FeedItemForm(props) {
                         variant="outlined"
                         size="small"
                         InputProps={{
-                            readOnly: props.isReadOnly,
+                            readOnly: isReadOnly,
                         }}
                         className="textField"
                         onChange={props.handleItemChange}
@@ -86,7 +89,7 @@ export default function FeedItemForm(props) {
                         variant="outlined"
                         size="small"
                         InputProps={{
-                            readOnly: props.isReadOnly,
+                            readOnly: isReadOnly,
                         }}
                         className="textField"
                         onChange={props.handleItemChange}
@@ -100,7 +103,7 @@ export default function FeedItemForm(props) {
                         variant="outlined"
                         size="small"
                         InputProps={{
-                            readOnly: props.isReadOnly,
+                            readOnly: isReadOnly,
                         }}
                         className="textField"
                         onChange={props.handleItemChange}
@@ -114,7 +117,7 @@ export default function FeedItemForm(props) {
                         variant="outlined"
                         size="small"
                         InputProps={{
-                            readOnly: props.isReadOnly,
+                            readOnly: isReadOnly,
                         }}
                         className="textField"
                         onChange={props.handleItemChange}
@@ -135,7 +138,7 @@ export default function FeedItemForm(props) {
                             disableToolbar
                             autoOk
                             className="textField"
-                            readOnly={props.isReadOnly}
+                            readOnly={isReadOnly}
                             onChange={(_, date) => { props.handleDateChange(date, "tncDate"); }}
                             error={"tncDate" in props.fieldErrors}
                         />
@@ -154,7 +157,7 @@ export default function FeedItemForm(props) {
                             disableToolbar
                             autoOk
                             className="textField"
-                            readOnly={props.isReadOnly}
+                            readOnly={isReadOnly}
                             onChange={(_, date) => { props.handleDateChange(date, "ppmDate"); }}
                             error={"ppmDate" in props.fieldErrors}
                         />
@@ -168,7 +171,7 @@ export default function FeedItemForm(props) {
                         variant="outlined"
                         size="small"
                         InputProps={{
-                            readOnly: props.isReadOnly,
+                            readOnly: isReadOnly,
                         }}
                         className="textField"
                         onChange={props.handleItemChange}
@@ -182,7 +185,7 @@ export default function FeedItemForm(props) {
                         variant="outlined"
                         size="small"
                         InputProps={{
-                            readOnly: props.isReadOnly,
+                            readOnly: isReadOnly,
                         }}
                         className="textField"
                         onChange={props.handleItemChange}

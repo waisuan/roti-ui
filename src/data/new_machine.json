@@ -1,0 +1,16 @@
+{
+    "serialNumber": "", 
+    "customer": "", 
+    "state": "", 
+    "district": "",
+    "accountType": "",
+    "model": "",
+    "brand": "",
+    "status": "",
+    "tncDate": null,
+    "ppmDate": null,
+    "reportedBy": "",
+    "personInCharge": "",
+    "createdOn": "",
+    "updatedOn": ""
+}

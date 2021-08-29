@@ -35,3 +35,11 @@
 .feedItem .collapsed-footer .footer-right {
     color: orangered;
 }
+
+.feedControlBar .feedItemAdd {
+    float: left;
+}
+
+.feedControlBar .feedItemControl {
+    float: right;
+}

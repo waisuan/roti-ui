@@ -3,7 +3,6 @@ import Paper from '@material-ui/core/Paper';
 
 import FeedItemUncollapsed from './FeedItemUncollapsed';
 import FeedItemCollapsed from './FeedItemCollapsed';
-import './FeedItem.css';
 
 class FeedItem extends Component {
     constructor(props) {
@@ -26,14 +25,18 @@ class FeedItem extends Component {
     }
 
     render() {
+        const isCollapsed = this.state.itemState === "collapsed" && !this.props.isNew;
+        const shouldElevate = this.props.isNew ? 5 : 1;
+
         return (
-            <Paper className="feedItem">
+            <Paper className="feedItem" elevation={shouldElevate}>
                 {
-                    this.state.itemState === "collapsed" ?
+                    isCollapsed ?
                         <FeedItemCollapsed item={this.props.item} onUncollapse={this.handleUncollapse}/>
                     :
                         <FeedItemUncollapsed
                             item={this.props.item}
+                            isNew={this.props.isNew}
                             onCancel={this.props.onCancel}
                             onSaveEdit={this.props.onSaveEdit}
                             onItemChange={this.props.onItemChange}

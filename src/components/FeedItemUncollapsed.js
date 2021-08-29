@@ -6,7 +6,6 @@ import FeedItemEditHeader from './FeedItemEditHeader';
 import FeedItemDeleteHeader from './FeedItemDeleteHeader';
 import FeedItemDefaultFooter from './FeedItemDefaultFooter';
 import FeedItemForm from './FeedItemForm';
-import './FeedItem.css';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 
@@ -14,7 +13,7 @@ class FeedItemUncollapsed extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            formState: "default",
+            formState: this.defaultFormState(),
             fieldErrors: {}
         };
 
@@ -34,7 +33,7 @@ class FeedItemUncollapsed extends Component {
     }
 
     resetState() {
-        this.setState({formState: "default", fieldErrors: {}});
+        this.setState({formState: this.defaultFormState(), fieldErrors: {}});
     }
 
     handleDateChange(date, fieldName) {
@@ -50,6 +49,10 @@ class FeedItemUncollapsed extends Component {
         }
     }
 
+    defaultFormState() {
+        return this.props.isNew ? "new" : "default";
+    }
+
     isDateValid(date) {
         return dayjs(date, DATE_FORMAT).format(DATE_FORMAT) === date;
     }
@@ -57,11 +60,18 @@ class FeedItemUncollapsed extends Component {
     render() {
         const isEditMode = this.state.formState === "edit";
         const isDelMode = this.state.formState === "delete";
+        const isNew = this.state.formState === "new";
         const isSaveDisabled = Object.keys(this.state.fieldErrors).length !== 0;
     
         let header;
         if (isEditMode) {
             header = <FeedItemEditHeader 
+                        handleCancel={this.handleCancel}
+                        handleSaveEdit={this.handleSaveEdit} 
+                        isSaveDisabled={isSaveDisabled}/>;
+        } else if (isNew) {
+            header = <FeedItemEditHeader
+                        isNew={isNew}
                         handleCancel={this.handleCancel}
                         handleSaveEdit={this.handleSaveEdit} 
                         isSaveDisabled={isSaveDisabled}/>;
@@ -81,13 +91,13 @@ class FeedItemUncollapsed extends Component {
                 {header}
                 <FeedItemForm 
                     item={this.props.item}
-                    isReadOnly={!isEditMode}
+                    formState={this.state.formState}
                     dateFormat={DATE_FORMAT}
                     fieldErrors={this.state.fieldErrors}
                     handleItemChange={(e) => { this.props.onItemChange(e.target.id, e.target.value); }}
                     handleDateChange={this.handleDateChange}
                 />
-                <FeedItemDefaultFooter createdOn={this.props.item.createdOn} updatedOn={this.props.item.updatedOn} footerType="uncollapsed"/>
+                {!isNew && <FeedItemDefaultFooter createdOn={this.props.item.createdOn} updatedOn={this.props.item.updatedOn} footerType="uncollapsed"/>}
             </div>
         );
     }

@@ -4,8 +4,6 @@ import IconButton from '@material-ui/core/IconButton';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 
-import './FeedItem.css';
-
 export default function FeedItemDeleteHeader(props) {
     return (
         <div className="header-right">
