@@ -13,9 +13,11 @@ export default function FeedItemEditHeader(props) {
                 </Typography>
             }
             <Tooltip title="Save">
-                <IconButton size="small" color="primary" aria-label="save" disabled={props.isSaveDisabled} onClick={props.handleSaveEdit}>
-                    <SaveIcon fontSize="inherit"/>
-                </IconButton>
+                <span>
+                    <IconButton size="small" color="primary" aria-label="save" disabled={props.isSaveDisabled} onClick={props.handleSaveEdit}>
+                        <SaveIcon fontSize="inherit"/>
+                    </IconButton>
+                </span>
             </Tooltip>
             <Tooltip title="Cancel">
                 <IconButton size="small" color="secondary" aria-label="cancel"  onClick={props.handleCancel}>

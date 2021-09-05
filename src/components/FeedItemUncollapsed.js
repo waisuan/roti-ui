@@ -37,7 +37,7 @@ class FeedItemUncollapsed extends Component {
     }
 
     handleDateChange(date, fieldName) {
-        if (!this.isDateValid(date)) {
+        if (date && !this.isDateValid(date)) {
             this.setState(prevState => ({ fieldErrors: {...prevState.fieldErrors, [fieldName]: 1} }));
         } else {
             if (fieldName in this.state.fieldErrors) {
@@ -61,7 +61,7 @@ class FeedItemUncollapsed extends Component {
         const isEditMode = this.state.formState === "edit";
         const isDelMode = this.state.formState === "delete";
         const isNew = this.state.formState === "new";
-        const isSaveDisabled = Object.keys(this.state.fieldErrors).length !== 0;
+        const isSaveDisabled = Object.keys(this.state.fieldErrors).length !== 0 || !this.props.item.serialNumber;
     
         let header;
         if (isEditMode) {

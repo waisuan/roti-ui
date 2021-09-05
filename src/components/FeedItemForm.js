@@ -21,6 +21,7 @@ export default function FeedItemForm(props) {
                         className="textField"
                         required={isNew}
                         autoFocus={isNew}
+                        onChange={props.handleItemChange}
                     />
                 </Grid>
                 <Grid item xs>

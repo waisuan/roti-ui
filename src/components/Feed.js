@@ -3,7 +3,6 @@ import Grid from '@material-ui/core/Grid';
 
 import FeedControlBar from './FeedControlBar';
 import FeedItem from './FeedItem';
-// import FeedItemNew from './FeedItemNew';
 import './FeedItem.css';
 
 import data from '../data/machines.json';
@@ -24,8 +23,6 @@ class Feed extends Component {
         this.handleSaveEdit = this.handleSaveEdit.bind(this);
         this.handleSaveDelete = this.handleSaveDelete.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
-        // this.renderNewFeedItem = this.renderNewFeedItem.bind(this);
-        this.renderExistingFeedItems = this.renderExistingFeedItems.bind(this);
     }
 
     handleItemChange(key, value, index) {
@@ -56,11 +53,17 @@ class Feed extends Component {
                 this.removeFromClonedData(index);
             });
         }
+        if (this.state.data[index].isNew) {
+            this.removeData(index);
+        }
     }
 
     handleSaveEdit(index) {
         if (index in this.state.clonedData) {
             this.removeFromClonedData(index);
+        }
+        if (this.state.data[index].isNew) {
+            this.hydrateNewData(index);
         }
     }
 
@@ -79,25 +82,29 @@ class Feed extends Component {
         this.setState({clonedData: tmp});
     }
 
-    handleAdd() {
-        this.setState({control: 'add_item'});
+    hydrateNewData(index) {
+        const tmp = [...this.state.data];
+        delete tmp[index].isNew;
+        this.setState({data: tmp});
     }
 
-    // renderNewFeedItem() {
-    //     const feedItemNew = (
-    //         <Grid item xs={12}>
-    //             <FeedItemNew/>
-    //         </Grid>
-    //     );
-        
-    //     return (
-    //         <Grid container spacing={1}>
-    //             {feedItemNew}
-    //         </Grid>
-    //     );
-    // }
+    removeData(index) {
+        this.setState(prevState => ({
+            data: [
+                ...prevState.data.slice(0, index),
+                ...prevState.data.slice(index+1)
+            ]
+        }));
+    }
 
-    renderExistingFeedItems() {
+    handleAdd() {
+        this.setState(prevState => ({
+            data: [newData, ...prevState.data],
+            control: 'add_item'
+        }));
+    }
+
+    render() {
         const feedControlBar = (
             <Grid item xs={12}> 
                 <FeedControlBar 
@@ -106,17 +113,13 @@ class Feed extends Component {
             </Grid>
         );
 
-        var items = this.state.data;
-        if (this.state.control === "add_item") {
-            items = [newData, ...items];
-        }
-        const feedItems = items.map((rec, index) => {
+        const feedItems = this.state.data.map((rec, index) => {
             return (
                 <Grid key={rec.serialNumber} item xs={12}>
                     <FeedItem 
                         index={index}
                         item={rec}
-                        isNew={rec.serialNumber === "" ? true : false}
+                        isNew={rec.isNew || false}
                         onItemChange={(k, v) => { this.handleItemChange(k, v, index); }} 
                         onCancel={() => { this.handleCancel(index); }}
                         onSaveEdit={() => { this.handleSaveEdit(index); }}
@@ -132,16 +135,6 @@ class Feed extends Component {
                 {feedItems}
             </Grid>
         );
-    }
-
-    render() {
-        // if (this.state.control === "add_item") {
-        //     return this.renderNewFeedItem();
-        // } else {
-        //     return this.renderExistingFeedItems();
-        // }
-
-        return this.renderExistingFeedItems();
     }
 }
 
