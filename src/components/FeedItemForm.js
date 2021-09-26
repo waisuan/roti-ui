@@ -1,7 +1,9 @@
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button'
 import DayJsUtils from '@date-io/dayjs';
 import {MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
+import AttachmentIcon from '@material-ui/icons/Attachment';
 
 export default function FeedItemForm(props) {
     const isNew = props.formState === "new";
@@ -191,6 +193,46 @@ export default function FeedItemForm(props) {
                         className="textField"
                         onChange={props.handleItemChange}
                     />
+                </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+                <Grid item xs={6}>
+                    <TextField
+                        id="additionalNotes"
+                        label="Notes"
+                        value={props.item.additionalNotes}
+                        variant="outlined"
+                        size="small"
+                        fullWidth
+                        multiline
+                        rows={3}
+                        InputProps={{
+                            readOnly: isReadOnly,
+                        }}
+                        className="textField"
+                        onChange={props.handleItemChange}
+                    />
+                </Grid>
+                <Grid item xs>
+                    <input
+                        id="form-item-attachment-button"
+                        type="file"
+                        disabled={isReadOnly}
+                        style={{display: 'none'}}
+                    />
+                    <label htmlFor="form-item-attachment-button">
+                        <Button
+                            variant="outlined"
+                            color="default"
+                            size="small"
+                            component="span"
+                            startIcon={<AttachmentIcon />}
+                            disabled={isReadOnly}
+                            className="attachment"
+                        >
+                            Attachment
+                        </Button>
+                    </label>
                 </Grid>
             </Grid>
         </form>

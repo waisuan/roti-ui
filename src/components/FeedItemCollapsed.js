@@ -15,7 +15,7 @@ export default function FeedItemCollapsed(props) {
                     {props.item.serialNumber}
                 </Link>
             </Typography>
-            <FeedItemDefaultFooter createdOn={props.item.createdOn} updatedOn={props.item.updatedOn} footerType="collapsed"/>
+            <FeedItemDefaultFooter createdOn={props.item.createdAt} updatedOn={props.item.updatedAt} footerType="collapsed"/>
         </div>
     );
 }

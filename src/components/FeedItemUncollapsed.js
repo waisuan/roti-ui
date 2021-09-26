@@ -97,7 +97,7 @@ class FeedItemUncollapsed extends Component {
                     handleItemChange={(e) => { this.props.onItemChange(e.target.id, e.target.value); }}
                     handleDateChange={this.handleDateChange}
                 />
-                {!isNew && <FeedItemDefaultFooter createdOn={this.props.item.createdOn} updatedOn={this.props.item.updatedOn} footerType="uncollapsed"/>}
+                {!isNew && <FeedItemDefaultFooter createdOn={this.props.item.createdAt} updatedOn={this.props.item.updatedAt} footerType="uncollapsed"/>}
             </div>
         );
     }

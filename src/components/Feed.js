@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
+import dayjs from 'dayjs';
 
+import API from '../Api';
 import FeedControlBar from './FeedControlBar';
 import FeedItem from './FeedItem';
 import './FeedItem.css';
 
-import data from '../data/machines.json';
 import newData from '../data/new_machine.json';
 
 class Feed extends Component {
@@ -13,9 +14,12 @@ class Feed extends Component {
         super(props);
 
         this.state = { 
-            data: data,
-            clonedData: {},
-            control: ''
+            data: [],
+            totalDataCount: 0,
+            pageLimit: 50,
+            pageOffset: 0,
+            currPageDataCount: 50,
+            clonedData: {}
         };
 
         this.handleItemChange = this.handleItemChange.bind(this);
@@ -23,6 +27,44 @@ class Feed extends Component {
         this.handleSaveEdit = this.handleSaveEdit.bind(this);
         this.handleSaveDelete = this.handleSaveDelete.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
+        this.handlePageChange = this.handlePageChange.bind(this);
+
+        this.currPageStats = this.currPageStats.bind(this);
+    }
+
+    componentDidMount() {
+        this.reloadData();
+    }
+
+    componentDidUpdate(_, prevState) {
+        if (this.state.pageOffset !== prevState.pageOffset) {
+            this.reloadData();
+        }
+    }
+
+    reloadData() {
+        // TODO: Auth, err handling
+        API.get(`machines?page_limit=${this.state.pageLimit}&page_offset=${this.state.pageOffset}`)
+            .then(res => {
+                console.log(res["data"]);
+                this.setState({
+                    data: this.cleanData(res["data"]["machines"]),
+                    totalDataCount: res["data"]["count"],
+                    currPageDataCount: res["data"]["machines"].length
+                });
+            });
+    }
+
+    cleanData(data) {
+        return data.map(d => {
+            Object.entries(d).forEach(entry => {
+                const [key, value] = entry;
+                d[key] = value || "";
+            })
+            d["createdAt"] = dayjs(d["createdAt"]).format("DD/MM/YYYY HH:mm");
+            d["updatedAt"] = dayjs(d["updatedAt"]).format("DD/MM/YYYY HH:mm");
+            return d;
+        });
     }
 
     handleItemChange(key, value, index) {
@@ -99,16 +141,33 @@ class Feed extends Component {
 
     handleAdd() {
         this.setState(prevState => ({
-            data: [newData, ...prevState.data],
-            control: 'add_item'
+            data: [newData, ...prevState.data]
         }));
+    }
+
+    handlePageChange(_, p) {
+        this.setState({pageOffset: this.state.pageLimit * (p - 1)});
+    }
+
+    pageCount() {
+        return Math.ceil(this.state.totalDataCount / this.state.pageLimit);
+    }
+
+    currPageStats() {
+        const startOfPage = this.state.pageOffset + 1
+        const endOfPage = startOfPage + this.state.currPageDataCount - 1;
+        return `(${startOfPage} - ${endOfPage} / ${this.state.totalDataCount})`;
     }
 
     render() {
         const feedControlBar = (
             <Grid item xs={12}> 
                 <FeedControlBar 
-                    onAdd={this.handleAdd} 
+                    isAddDisabled={this.state.data[0]?.isNew || false}
+                    pageCount={this.pageCount()}
+                    currPageStats={this.currPageStats()}
+                    onAdd={this.handleAdd}
+                    onChangePage={this.handlePageChange}
                 />
             </Grid>
         );
