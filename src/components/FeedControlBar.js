@@ -33,6 +33,7 @@ export default function FeedControlBar(props) {
             <div className="feedItemControl">
                 <Pagination 
                     size="small"
+                    color="primary"
                     count={props.pageCount}
                     showFirstButton
                     showLastButton 

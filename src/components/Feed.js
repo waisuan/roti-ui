@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
 import dayjs from 'dayjs';
 
-import API from '../Api';
+import API from '../api/FeedApi';
 import FeedControlBar from './FeedControlBar';
 import FeedItem from './FeedItem';
 import './FeedItem.css';
@@ -43,16 +43,16 @@ class Feed extends Component {
     }
 
     reloadData() {
-        // TODO: Auth, err handling
-        API.get(`machines?page_limit=${this.state.pageLimit}&page_offset=${this.state.pageOffset}`)
-            .then(res => {
-                console.log(res["data"]);
-                this.setState({
-                    data: this.cleanData(res["data"]["machines"]),
-                    totalDataCount: res["data"]["count"],
-                    currPageDataCount: res["data"]["machines"].length
-                });
-            });
+        API.getFeed(this.state.pageLimit, this.state.pageOffset)
+            .then(data => {
+                if (Object.keys(data).length !== 0 ) {
+                    this.setState({
+                        data: this.cleanData(data.machines),
+                        totalDataCount: data.count,
+                        currPageDataCount: data.machines.length
+                    });
+                }
+            })
     }
 
     cleanData(data) {
@@ -101,12 +101,19 @@ class Feed extends Component {
     }
 
     handleSaveEdit(index) {
-        if (index in this.state.clonedData) {
-            this.removeFromClonedData(index);
-        }
-        if (this.state.data[index].isNew) {
-            this.hydrateNewData(index);
-        }
+        API.updateFeedItem(this.state.data[index].serialNumber, this.state.data[index])
+            .then(res => {
+                if (res) {
+                    if (index in this.state.clonedData) {
+                        this.removeFromClonedData(index);
+                    }
+                    if (this.state.data[index].isNew) {
+                        this.hydrateNewData(index);
+                    }
+                } else {
+                    // TODO handle err
+                }
+            })
     }
 
     handleSaveDelete(index) {
