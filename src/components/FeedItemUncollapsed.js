@@ -50,7 +50,7 @@ class FeedItemUncollapsed extends Component {
     }
 
     defaultFormState() {
-        return this.props.isNew ? "new" : "default";
+        return this.props.itemState || "default";
     }
 
     isDateValid(date) {

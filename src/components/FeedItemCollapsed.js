@@ -1,21 +1,14 @@
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
-
-import FeedItemDefaultFooter from './FeedItemDefaultFooter';
+import FeedItemSummary from './FeedItemSummary';
+import FeedItemDeleted from './FeedItemDeleted';
 
 export default function FeedItemCollapsed(props) {
     return (
         <div className="collapsed">
-            <Typography>
-                <Link
-                    component="button" 
-                    variant="body1"
-                    underline="none"
-                    onClick={props.onUncollapse}>
-                    {props.item.serialNumber}
-                </Link>
-            </Typography>
-            <FeedItemDefaultFooter createdOn={props.item.createdAt} updatedOn={props.item.updatedAt} footerType="collapsed"/>
+            { props.item.isDeleted ? 
+                <FeedItemDeleted item={props.item.serialNumber}/>
+            :
+                <FeedItemSummary item={props.item} onUncollapse={props.onUncollapse}/>
+            }
         </div>
     );
 }

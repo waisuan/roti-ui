@@ -47,7 +47,7 @@ class Feed extends Component {
             .then(data => {
                 if (Object.keys(data).length !== 0 ) {
                     this.setState({
-                        data: this.cleanData(data.machines),
+                        data: this.cleanDataRows(data.machines),
                         totalDataCount: data.count,
                         currPageDataCount: data.machines.length
                     });
@@ -55,16 +55,24 @@ class Feed extends Component {
             })
     }
 
-    cleanData(data) {
-        return data.map(d => {
-            Object.entries(d).forEach(entry => {
-                const [key, value] = entry;
-                d[key] = value || "";
-            })
-            d["createdAt"] = dayjs(d["createdAt"]).format("DD/MM/YYYY HH:mm");
-            d["updatedAt"] = dayjs(d["updatedAt"]).format("DD/MM/YYYY HH:mm");
-            return d;
+    cleanDataRows(dataRows) {
+        return dataRows.map(d => {
+            return this.cleanDataRow(d);
         });
+    }
+
+    cleanDataRow(dataRow) {
+        Object.entries(dataRow).forEach(entry => {
+            const [key, value] = entry;
+            if (key === "tncDate" || key === "ppmDate") {
+                dataRow[key] = value?.length === 0 ? null : value;
+            } else {
+                dataRow[key] = value || "";
+            }
+        })
+        dataRow.createdAt = dayjs(dataRow.createdAt).format("DD/MM/YYYY HH:mm");
+        dataRow.updatedAt = dayjs(dataRow.updatedAt).format("DD/MM/YYYY HH:mm");
+        return dataRow;
     }
 
     handleItemChange(key, value, index) {
@@ -101,28 +109,37 @@ class Feed extends Component {
     }
 
     handleSaveEdit(index) {
-        API.updateFeedItem(this.state.data[index].serialNumber, this.state.data[index])
+        const targetData = this.state.data[index];
+        const isNew = targetData.isNew;
+        delete targetData.isNew;
+        const api = isNew ? API.addFeedItem(targetData) : API.updateFeedItem(targetData.serialNumber, targetData);
+
+        api.then(res => {
+            if (res) {
+                if (index in this.state.clonedData) {
+                    this.removeFromClonedData(index);
+                }
+                this.updateStateData(index, {...this.cleanDataRow(res)});
+            } else {
+                // TODO handle err
+            }
+        });
+    }
+
+    handleSaveDelete(index) {
+        const deletedItem = { serialNumber: this.state.data[index].serialNumber, isDeleted: true };
+
+        API.deleteFeedItem(deletedItem.serialNumber)
             .then(res => {
                 if (res) {
+                    this.updateStateData(index, deletedItem);
                     if (index in this.state.clonedData) {
                         this.removeFromClonedData(index);
-                    }
-                    if (this.state.data[index].isNew) {
-                        this.hydrateNewData(index);
                     }
                 } else {
                     // TODO handle err
                 }
-            })
-    }
-
-    handleSaveDelete(index) {
-        const tmp = [...this.state.data];
-        tmp.splice(index, 1);
-        this.setState({data: tmp});
-        if (index in this.state.clonedData) {
-            this.removeFromClonedData(index);
-        }
+            });
     }
 
     removeFromClonedData(index) {
@@ -131,16 +148,20 @@ class Feed extends Component {
         this.setState({clonedData: tmp});
     }
 
-    hydrateNewData(index) {
-        const tmp = [...this.state.data];
-        delete tmp[index].isNew;
-        this.setState({data: tmp});
-    }
-
     removeData(index) {
         this.setState(prevState => ({
             data: [
                 ...prevState.data.slice(0, index),
+                ...prevState.data.slice(index+1)
+            ]
+        }));
+    }
+
+    updateStateData(index, changes) {
+        this.setState(prevState => ({
+            data: [
+                ...prevState.data.slice(0, index),
+                changes,
                 ...prevState.data.slice(index+1)
             ]
         }));
@@ -180,12 +201,19 @@ class Feed extends Component {
         );
 
         const feedItems = this.state.data.map((rec, index) => {
+            let itemState = null;
+            if (rec.isNew) {
+                itemState = "new";
+            } else if (rec.isDeleted) {
+                itemState = "deleted";
+            }
+
             return (
                 <Grid key={rec.serialNumber} item xs={12}>
                     <FeedItem 
                         index={index}
                         item={rec}
-                        isNew={rec.isNew || false}
+                        itemState={itemState}
                         onItemChange={(k, v) => { this.handleItemChange(k, v, index); }} 
                         onCancel={() => { this.handleCancel(index); }}
                         onSaveEdit={() => { this.handleSaveEdit(index); }}

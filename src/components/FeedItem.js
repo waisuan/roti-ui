@@ -9,7 +9,7 @@ class FeedItem extends Component {
         super(props);
 
         this.state = {
-            itemState: "collapsed"
+            showState: "collapsed"
         };
 
         this.handleCollapse = this.handleCollapse.bind(this);
@@ -17,16 +17,18 @@ class FeedItem extends Component {
     }
 
     handleCollapse() {
-        this.setState({itemState: "collapsed"});
+        this.setState({showState: "collapsed"});
     }
 
     handleUncollapse() {
-        this.setState({itemState: "uncollapsed"});
+        this.setState({showState: "uncollapsed"});
     }
 
     render() {
-        const isCollapsed = this.state.itemState === "collapsed" && !this.props.isNew;
-        const shouldElevate = this.props.isNew ? 5 : 1;
+        const isNew = this.props.itemState === "new";
+        const isCollapsed = (this.state.showState === "collapsed" && !isNew) 
+                            || this.props.itemState === "deleted";
+        const shouldElevate = isNew ? 5 : 1;
 
         return (
             <Paper className="feedItem" elevation={shouldElevate}>
@@ -36,7 +38,7 @@ class FeedItem extends Component {
                     :
                         <FeedItemUncollapsed
                             item={this.props.item}
-                            isNew={this.props.isNew}
+                            itemState={this.props.itemState}
                             onCancel={this.props.onCancel}
                             onSaveEdit={this.props.onSaveEdit}
                             onItemChange={this.props.onItemChange}

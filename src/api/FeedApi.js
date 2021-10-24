@@ -6,7 +6,6 @@ export default {
     getFeed(limit, offset) {
         return API.get(`machines?page_limit=${limit}&page_offset=${offset}`)
             .then(res => {
-                console.log(res.data);
                 return res.data;
             }).catch(err => {
                 console.error(err);
@@ -15,6 +14,15 @@ export default {
     },
     updateFeedItem(id, body) {
         return API.put(`machines/${id}`, body)
+            .then(res => {
+                return res.data;
+            }).catch(err => {
+                console.error(err);
+                return null;
+            })
+    },
+    deleteFeedItem(id) {
+        return API.delete(`machines/${id}`)
             .then(_ => {
                 return true;
             }).catch(err => {
@@ -22,4 +30,13 @@ export default {
                 return false;
             })
     },
+    addFeedItem(body) {
+        return API.post(`machines`, body)
+            .then(_ => {
+                return true;
+            }).catch(err => {
+                console.error(err);
+                return false;
+            })
+    }
 }
