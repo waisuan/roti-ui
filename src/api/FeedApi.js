@@ -32,11 +32,11 @@ export default {
     },
     addFeedItem(body) {
         return API.post(`machines`, body)
-            .then(_ => {
-                return true;
+            .then(res => {
+                return res.data;
             }).catch(err => {
                 console.error(err);
-                return false;
+                return null;
             })
     }
 }

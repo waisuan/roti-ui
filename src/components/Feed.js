@@ -110,11 +110,8 @@ class Feed extends Component {
 
     handleSaveEdit(index) {
         const targetData = this.state.data[index];
-        const isNew = targetData.isNew;
-        delete targetData.isNew;
-        const api = isNew ? API.addFeedItem(targetData) : API.updateFeedItem(targetData.serialNumber, targetData);
-
-        api.then(res => {
+        
+        this.editApiHandler(targetData).then(res => {
             if (res) {
                 if (index in this.state.clonedData) {
                     this.removeFromClonedData(index);
@@ -124,6 +121,15 @@ class Feed extends Component {
                 // TODO handle err
             }
         });
+    }
+
+    editApiHandler(targetData) {
+        if (targetData.isNew) {
+            delete targetData.isNew;
+            return API.addFeedItem(targetData) 
+        } else {
+            return API.updateFeedItem(targetData.serialNumber, targetData);
+        }
     }
 
     handleSaveDelete(index) {
