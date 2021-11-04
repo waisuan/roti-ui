@@ -14,16 +14,18 @@ class FeedItemUncollapsed extends Component {
         super(props);
         this.state = {
             formState: this.defaultFormState(),
-            fieldErrors: {}
+            fieldErrors: {},
+            clonedData: {}
         };
 
         this.handleCancel = this.handleCancel.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
         this.handleSaveEdit = this.handleSaveEdit.bind(this);
+        this.handleItemChange = this.handleItemChange.bind(this);
     }
 
     handleCancel() {
-        this.props.onCancel();
+        //this.props.onCancel();
         this.resetState();
     }
 
@@ -33,7 +35,7 @@ class FeedItemUncollapsed extends Component {
     }
 
     resetState() {
-        this.setState({formState: this.defaultFormState(), fieldErrors: {}});
+        this.setState({formState: this.defaultFormState(), fieldErrors: {}, clonedData: {}});
     }
 
     handleDateChange(date, fieldName) {
@@ -45,7 +47,18 @@ class FeedItemUncollapsed extends Component {
                 delete tmp[fieldName];
                 this.setState({fieldErrors: tmp});
             }
-            this.props.onItemChange(fieldName, date);
+            // this.props.onItemChange(fieldName, date);
+            this.handleItemChange(fieldName, date);
+        }
+    }
+
+    handleItemChange(key, value) {
+        if (!this.clonedDataExists()) {
+            this.setState({clonedData: {...this.props.item, [key]: value}});
+        } else {
+            this.setState(prevState => ({
+                clonedData: {...prevState.clonedData, [key]: value}
+            }));
         }
     }
 
@@ -55,6 +68,10 @@ class FeedItemUncollapsed extends Component {
 
     isDateValid(date) {
         return dayjs(date, DATE_FORMAT).format(DATE_FORMAT) === date;
+    }
+
+    clonedDataExists() {
+        return Object.keys(this.state.clonedData).length !== 0;
     }
 
     render() {
@@ -86,15 +103,18 @@ class FeedItemUncollapsed extends Component {
                         handleCollapse={this.props.onCollapse}/>;
         }
     
+        const item = this.clonedDataExists() ? this.state.clonedData : this.props.item;
+        
         return (
             <div>
                 {header}
                 <FeedItemForm 
-                    item={this.props.item}
+                    item={item}
                     formState={this.state.formState}
                     dateFormat={DATE_FORMAT}
                     fieldErrors={this.state.fieldErrors}
-                    handleItemChange={(e) => { this.props.onItemChange(e.target.id, e.target.value); }}
+                    handleItemChange={(e) => { this.handleItemChange(e.target.id, e.target.value); }}
+                    //handleItemChange={(e) => { this.props.onItemChange(e.target.id, e.target.value); }}
                     handleDateChange={this.handleDateChange}
                 />
                 {!isNew && <FeedItemDefaultFooter createdOn={this.props.item.createdAt} updatedOn={this.props.item.updatedAt} footerType="uncollapsed"/>}
