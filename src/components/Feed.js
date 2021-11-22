@@ -18,15 +18,13 @@ class Feed extends Component {
             totalDataCount: 0,
             pageLimit: 50,
             pageOffset: 0,
-            currPageDataCount: 50,
-            clonedData: {}
+            currPageDataCount: 50
         };
 
-        this.handleItemChange = this.handleItemChange.bind(this);
-        this.handleCancel = this.handleCancel.bind(this);
         this.handleSaveEdit = this.handleSaveEdit.bind(this);
         this.handleSaveDelete = this.handleSaveDelete.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
         this.handlePageChange = this.handlePageChange.bind(this);
 
         this.currPageStats = this.currPageStats.bind(this);
@@ -75,55 +73,36 @@ class Feed extends Component {
         return dataRow;
     }
 
-    handleItemChange(key, value, index) {
-        if (!(index in this.state.clonedData)) {
-            this.setState(prevState => ({
-                clonedData: {...prevState.clonedData, [index]: prevState.data[index]}
-            }));
-        }
-
-        this.setState(prevState => ({
-            data: [
-                ...prevState.data.slice(0, index),
-                {...prevState.data[index], [key]: value},
-                ...prevState.data.slice(index+1)
-            ]
-        }));
-    }
-
     handleCancel(index) {
-        if (index in this.state.clonedData) {
-            this.setState(prevState => ({
-                data: [
-                    ...prevState.data.slice(0, index),
-                    {...prevState.clonedData[index]},
-                    ...prevState.data.slice(index+1)
-                ]
-            }), () => { 
-                this.removeFromClonedData(index);
-            });
-        }
-        if (this.state.data[index].isNew) {
+        const currentData = this.state.data[index];
+        if (currentData.isNew) {
             this.removeData(index);
+        } else if (currentData.hasError) {
+            delete currentData.hasError;
+            this.updateStateData(index, currentData);
         }
     }
 
-    handleSaveEdit(index) {
-        const targetData = this.state.data[index];
-        
-        this.editApiHandler(targetData).then(res => {
-            if (res) {
-                if (index in this.state.clonedData) {
-                    this.removeFromClonedData(index);
-                }
-                this.updateStateData(index, {...this.cleanDataRow(res)});
-            } else {
-                // TODO handle err
-            }
-        });
+    // TODO handle progress
+    handleSaveEdit(index, updatedData) {
+        setTimeout(() => {
+            const currentData = this.state.data[index];
+            currentData.hasError = true;
+            this.updateStateData(index, currentData);
+
+            // this.editApiHandler(updatedData).then(res => {
+            //     if (res) {
+            //         this.updateStateData(index, {...this.cleanDataRow(res)});
+            //     } else {
+            //         // TODO handle err
+            //     }
+            // });
+        }, 2000);
     }
 
     editApiHandler(targetData) {
+        delete targetData.hasError;
+
         if (targetData.isNew) {
             delete targetData.isNew;
             return API.addFeedItem(targetData) 
@@ -132,26 +111,24 @@ class Feed extends Component {
         }
     }
 
+    // TODO handle progress
     handleSaveDelete(index) {
         const deletedItem = { serialNumber: this.state.data[index].serialNumber, isDeleted: true };
 
-        API.deleteFeedItem(deletedItem.serialNumber)
-            .then(res => {
-                if (res) {
-                    this.updateStateData(index, deletedItem);
-                    if (index in this.state.clonedData) {
-                        this.removeFromClonedData(index);
-                    }
-                } else {
-                    // TODO handle err
-                }
-            });
-    }
+        setTimeout(() => {
+            const currentData = this.state.data[index];
+            currentData.hasError = true;
+            this.updateStateData(index, currentData);
 
-    removeFromClonedData(index) {
-        const tmp = {...this.state.clonedData}
-        delete tmp[index];
-        this.setState({clonedData: tmp});
+            // API.deleteFeedItem(deletedItem.serialNumber)
+            // .then(res => {
+            //     if (res) {
+            //         this.updateStateData(index, deletedItem);
+            //     } else {
+            //         // TODO handle err
+            //     }
+            // });
+        }, 2000);
     }
 
     removeData(index) {
@@ -208,10 +185,12 @@ class Feed extends Component {
 
         const feedItems = this.state.data.map((rec, index) => {
             let itemState = null;
-            if (rec.isNew) {
-                itemState = "new";
-            } else if (rec.isDeleted) {
+            if (rec.isDeleted) {
                 itemState = "deleted";
+            } else if (rec.hasError) {
+                itemState = "hasError";
+            } else if (rec.isNew) {
+                itemState = "new";
             }
 
             return (
@@ -220,10 +199,9 @@ class Feed extends Component {
                         index={index}
                         item={rec}
                         itemState={itemState}
-                        onItemChange={(k, v) => { this.handleItemChange(k, v, index); }} 
-                        onCancel={() => { this.handleCancel(index); }}
-                        onSaveEdit={() => { this.handleSaveEdit(index); }}
+                        onSaveEdit={(updatedData) => { this.handleSaveEdit(index, updatedData); }}
                         onSaveDelete={() => { this.handleSaveDelete(index); }}
+                        onCancel={() => { this.handleCancel(index); }}
                     />
                 </Grid>
             );

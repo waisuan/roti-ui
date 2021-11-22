@@ -39,10 +39,9 @@ class FeedItem extends Component {
                         <FeedItemUncollapsed
                             item={this.props.item}
                             itemState={this.props.itemState}
-                            onCancel={this.props.onCancel}
                             onSaveEdit={this.props.onSaveEdit}
-                            onItemChange={this.props.onItemChange}
                             onSaveDelete={this.props.onSaveDelete}
+                            onCancel={this.props.onCancel}
                             onCollapse={this.handleCollapse}
                         />
                 }
