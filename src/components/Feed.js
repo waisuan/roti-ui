@@ -83,20 +83,17 @@ class Feed extends Component {
         }
     }
 
-    // TODO handle progress
     handleSaveEdit(index, updatedData) {
         setTimeout(() => {
-            const currentData = this.state.data[index];
-            currentData.hasError = true;
-            this.updateStateData(index, currentData);
-
-            // this.editApiHandler(updatedData).then(res => {
-            //     if (res) {
-            //         this.updateStateData(index, {...this.cleanDataRow(res)});
-            //     } else {
-            //         // TODO handle err
-            //     }
-            // });
+            this.editApiHandler(updatedData).then(res => {
+                if (res) {
+                    this.updateStateData(index, {...this.cleanDataRow(res)});
+                } else {
+                    const currentData = this.state.data[index];
+                    currentData.hasError = true;
+                    this.updateStateData(index, currentData);
+                }
+            });
         }, 2000);
     }
 
@@ -111,23 +108,20 @@ class Feed extends Component {
         }
     }
 
-    // TODO handle progress
     handleSaveDelete(index) {
         const deletedItem = { serialNumber: this.state.data[index].serialNumber, isDeleted: true };
 
         setTimeout(() => {
-            const currentData = this.state.data[index];
-            currentData.hasError = true;
-            this.updateStateData(index, currentData);
-
-            // API.deleteFeedItem(deletedItem.serialNumber)
-            // .then(res => {
-            //     if (res) {
-            //         this.updateStateData(index, deletedItem);
-            //     } else {
-            //         // TODO handle err
-            //     }
-            // });
+            API.deleteFeedItem(deletedItem.serialNumber)
+            .then(res => {
+                if (res) {
+                    this.updateStateData(index, deletedItem);
+                } else {
+                    const currentData = this.state.data[index];
+                    currentData.hasError = true;
+                    this.updateStateData(index, currentData);
+                }
+            });
         }, 2000);
     }
 
@@ -184,21 +178,11 @@ class Feed extends Component {
         );
 
         const feedItems = this.state.data.map((rec, index) => {
-            let itemState = null;
-            if (rec.isDeleted) {
-                itemState = "deleted";
-            } else if (rec.hasError) {
-                itemState = "hasError";
-            } else if (rec.isNew) {
-                itemState = "new";
-            }
-
             return (
                 <Grid key={rec.serialNumber} item xs={12}>
                     <FeedItem 
                         index={index}
                         item={rec}
-                        itemState={itemState}
                         onSaveEdit={(updatedData) => { this.handleSaveEdit(index, updatedData); }}
                         onSaveDelete={() => { this.handleSaveDelete(index); }}
                         onCancel={() => { this.handleCancel(index); }}

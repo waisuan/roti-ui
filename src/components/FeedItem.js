@@ -25,9 +25,8 @@ class FeedItem extends Component {
     }
 
     render() {
-        const isNew = this.props.itemState === "new";
-        const isCollapsed = (this.state.showState === "collapsed" && !isNew) 
-                            || this.props.itemState === "deleted";
+        const isNew = this.props.item.isNew;
+        const isCollapsed = (!isNew && this.state.showState === "collapsed") || this.props.item.isDeleted;
         const shouldElevate = isNew ? 5 : 1;
 
         return (
@@ -38,7 +37,6 @@ class FeedItem extends Component {
                     :
                         <FeedItemUncollapsed
                             item={this.props.item}
-                            itemState={this.props.itemState}
                             onSaveEdit={this.props.onSaveEdit}
                             onSaveDelete={this.props.onSaveDelete}
                             onCancel={this.props.onCancel}

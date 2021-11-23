@@ -29,15 +29,13 @@ class FeedItemUncollapsed extends Component {
         this.handleItemChange = this.handleItemChange.bind(this);
     }
 
-    // TODO care for new save / add
     componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log(this.state);
         if (this.state.formState === "saving") {
             if (!prevState.failedToSave &&
                 !this.state.failedToSave && 
-                this.props.itemState === "hasError") {
+                this.props.item.hasError) {
                 this.revertStateDueToErr();
-            } else if (prevProps.item.version < this.props.item.version) {
+            } else if ((prevProps.item.version || 0) < this.props.item.version) {
                 this.resetState();
             }
         }
@@ -118,7 +116,13 @@ class FeedItemUncollapsed extends Component {
     }
 
     defaultFormState() {
-        return this.props.itemState || "default";
+        if (this.props.item.isNew) {
+            return "new";
+        } else if (this.props.item.isDeleted) {
+            return "delete";
+        }
+
+        return "default";
     }
 
     isDateValid(date) {
@@ -181,7 +185,7 @@ class FeedItemUncollapsed extends Component {
                     handleItemChange={(e) => { this.handleItemChange(e.target.id, e.target.value); }}
                     handleDateChange={this.handleDateChange}
                 />
-                {!isNew && <FeedItemDefaultFooter createdOn={this.props.item.createdAt} updatedOn={this.props.item.updatedAt} footerType="uncollapsed"/>}
+                {!item.isNew && <FeedItemDefaultFooter createdOn={item.createdAt} updatedOn={item.updatedAt} footerType="uncollapsed"/>}
             </div>
         );
     }
