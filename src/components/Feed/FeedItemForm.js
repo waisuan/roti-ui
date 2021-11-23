@@ -1,8 +1,8 @@
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button'
+import Button from '@material-ui/core/Button';
 import DayJsUtils from '@date-io/dayjs';
-import {MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
+import {MuiPickersUtilsProvider, DatePicker} from '@material-ui/pickers';
 import AttachmentIcon from '@material-ui/icons/Attachment';
 
 export default function FeedItemForm(props) {
@@ -130,7 +130,7 @@ export default function FeedItemForm(props) {
             <Grid container>
                 <Grid item xs>
                     <MuiPickersUtilsProvider utils={DayJsUtils}>
-                        <KeyboardDatePicker
+                        <DatePicker
                             id="tncDate"
                             label="TNC Date"
                             value={props.item.tncDate}
@@ -138,18 +138,19 @@ export default function FeedItemForm(props) {
                             variant="inline"
                             inputVariant="outlined"
                             margin="dense"
-                            disableToolbar
                             autoOk
                             className="textField"
+                            InputProps={{ readOnly: isReadOnly }}
                             readOnly={isReadOnly}
-                            onChange={(_, date) => { props.handleDateChange(date, "tncDate"); }}
-                            error={"tncDate" in props.fieldErrors}
+                            onChange={(date) => { 
+                                props.handleDateChange(date, "tncDate"); 
+                            }}
                         />
                     </MuiPickersUtilsProvider>
                 </Grid>
                 <Grid item xs>
                     <MuiPickersUtilsProvider utils={DayJsUtils}>
-                        <KeyboardDatePicker
+                        <DatePicker
                             id="ppmDate"
                             label="PPM Date"
                             value={props.item.ppmDate}
@@ -157,12 +158,13 @@ export default function FeedItemForm(props) {
                             variant="inline"
                             inputVariant="outlined"
                             margin="dense"
-                            disableToolbar
                             autoOk
                             className="textField"
+                            InputProps={{ readOnly: isReadOnly }}
                             readOnly={isReadOnly}
-                            onChange={(_, date) => { props.handleDateChange(date, "ppmDate"); }}
-                            error={"ppmDate" in props.fieldErrors}
+                            onChange={(date) => { 
+                                props.handleDateChange(date, "ppmDate"); 
+                            }}
                         />
                     </MuiPickersUtilsProvider>
                 </Grid>

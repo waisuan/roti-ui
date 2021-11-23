@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
 import dayjs from 'dayjs';
 
-import API from '../api/FeedApi';
+import API from '../../api/FeedApi';
 import FeedControlBar from './FeedControlBar';
 import FeedItem from './FeedItem';
 import './FeedItem.css';
 
-import newData from '../data/new_machine.json';
+import newData from '../../data/new_machine.json';
 
 class Feed extends Component {
     constructor(props) {

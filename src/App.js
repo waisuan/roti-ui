@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Container from '@material-ui/core/Container';
 
 import './App.css';
-import Feed from './components/Feed';
+import Feed from './components/Feed/Feed';
 
 class App extends Component {
     render() {

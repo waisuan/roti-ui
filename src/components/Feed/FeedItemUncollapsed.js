@@ -92,17 +92,9 @@ class FeedItemUncollapsed extends Component {
         });
     }
 
-    handleDateChange(date, fieldName) {
-        if (date && !this.isDateValid(date)) {
-            this.setState(prevState => ({ fieldErrors: {...prevState.fieldErrors, [fieldName]: 1} }));
-        } else {
-            if (fieldName in this.state.fieldErrors) {
-                const tmp = {...this.state.fieldErrors};
-                delete tmp[fieldName];
-                this.setState({fieldErrors: tmp});
-            }
-            this.handleItemChange(fieldName, date);
-        }
+    handleDateChange(rawDate, fieldName) {
+        const date = dayjs(rawDate, DATE_FORMAT).format(DATE_FORMAT);
+        this.handleItemChange(fieldName, date);
     }
 
     handleItemChange(key, value) {
@@ -123,10 +115,6 @@ class FeedItemUncollapsed extends Component {
         }
 
         return "default";
-    }
-
-    isDateValid(date) {
-        return dayjs(date, DATE_FORMAT).format(DATE_FORMAT) === date;
     }
 
     clonedDataExists() {
