@@ -83,7 +83,17 @@ class Feed extends Component {
         }
     }
 
-    handleSaveEdit(index, updatedData) {
+    async handleSaveEdit(index, updatedData, uploadedFile) {
+        if (uploadedFile) {
+            const res = await API.uploadFile(updatedData.serialNumber, uploadedFile);
+            if (!res) {
+                const currentData = this.state.data[index];
+                currentData.hasError = true;
+                this.updateStateData(index, currentData);
+                return;
+            }
+        }
+
         setTimeout(() => {
             this.editApiHandler(updatedData).then(res => {
                 if (res) {
@@ -183,7 +193,7 @@ class Feed extends Component {
                     <FeedItem 
                         index={index}
                         item={rec}
-                        onSaveEdit={(updatedData) => { this.handleSaveEdit(index, updatedData); }}
+                        onSaveEdit={(updatedData, uploadedFile) => { this.handleSaveEdit(index, updatedData, uploadedFile); }}
                         onSaveDelete={() => { this.handleSaveDelete(index); }}
                         onCancel={() => { this.handleCancel(index); }}
                     />

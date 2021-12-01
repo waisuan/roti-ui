@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button';
 import DayJsUtils from '@date-io/dayjs';
 import {MuiPickersUtilsProvider, DatePicker} from '@material-ui/pickers';
 import AttachmentIcon from '@material-ui/icons/Attachment';
+import Chip from '@material-ui/core/Chip';
 
 export default function FeedItemForm(props) {
     const isNew = props.formState === "new";
@@ -216,25 +217,41 @@ export default function FeedItemForm(props) {
                     />
                 </Grid>
                 <Grid item xs>
-                    <input
-                        id="form-item-attachment-button"
-                        type="file"
-                        disabled={isReadOnly}
-                        style={{display: 'none'}}
-                    />
-                    <label htmlFor="form-item-attachment-button">
-                        <Button
-                            variant="outlined"
-                            color="default"
-                            size="small"
-                            component="span"
-                            startIcon={<AttachmentIcon />}
+                    { props.uploadedFileName ? 
+                        <Chip 
+                            icon={<AttachmentIcon />}
+                            size="small" 
+                            label={props.uploadedFileName}
+                            onDelete={props.handleCancelFileUpload} 
+                            color="primary" 
                             disabled={isReadOnly}
                             className="attachment"
-                        >
-                            Attachment
-                        </Button>
-                    </label>
+                        />
+                        :
+                        <div>
+                            <input
+                                id="form-item-attachment-button"
+                                type="file"
+                                disabled={isReadOnly}
+                                style={{display: 'none'}}
+                                accept="application/pdf"
+                                onChange={props.handleFileUpload}
+                            />
+                            <label htmlFor="form-item-attachment-button">
+                                <Button
+                                    variant="outlined"
+                                    color="default"
+                                    size="small"
+                                    component="span"
+                                    startIcon={<AttachmentIcon />}
+                                    disabled={isReadOnly}
+                                    className="attachment"
+                                >
+                                    Attachment
+                                </Button>
+                            </label>
+                        </div>
+                    }
                 </Grid>
             </Grid>
         </form>

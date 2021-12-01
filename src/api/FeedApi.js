@@ -38,5 +38,17 @@ export default {
                 console.error(err);
                 return null;
             })
+    },
+    uploadFile(id, file) {
+        const formData = new FormData();
+        formData.append("file", file, file.name);
+
+        return API.post(`files/${id}`, formData)
+            .then(_ => {
+                return true;
+            }).catch(err => {
+                console.error(err);
+                return false;
+            })
     }
 }

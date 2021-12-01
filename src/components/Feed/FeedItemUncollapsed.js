@@ -19,7 +19,8 @@ class FeedItemUncollapsed extends Component {
             prevState: "",
             fieldErrors: {},
             clonedData: {},
-            failedToSave: false
+            failedToSave: false,
+            uploadedFile: undefined
         };
 
         this.handleCancel = this.handleCancel.bind(this);
@@ -27,6 +28,8 @@ class FeedItemUncollapsed extends Component {
         this.handleSaveEdit = this.handleSaveEdit.bind(this);
         this.handleSaveDelete = this.handleSaveDelete.bind(this);
         this.handleItemChange = this.handleItemChange.bind(this);
+        this.handleFileUpload = this.handleFileUpload.bind(this);
+        this.handleCancelFileUpload = this.handleCancelFileUpload.bind(this);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -47,12 +50,13 @@ class FeedItemUncollapsed extends Component {
     }
 
     handleSaveEdit() {
-        if (!this.clonedDataExists()) {
+        if (!this.clonedDataExists() && !this.state.uploadedFile) {
             this.handleCancel();
             return;
         }
-        
-        this.props.onSaveEdit(this.state.clonedData);
+
+        // TODO handle removed files        
+        this.props.onSaveEdit(this.state.clonedData, this.state.uploadedFile);
         
         if (this.state.clonedData.isNew) {
             this.setSavingState("new");
@@ -61,6 +65,7 @@ class FeedItemUncollapsed extends Component {
         }
     }
 
+    // TODO handle files
     handleSaveDelete() {
         this.props.onSaveDelete();
         this.setSavingState("delete");
@@ -77,7 +82,7 @@ class FeedItemUncollapsed extends Component {
     revertStateDueToErr() {
         this.setState({
             formState: this.state.prevState, 
-            prevState: "", 
+            prevState: "",
             failedToSave: true
         });
     }
@@ -88,7 +93,8 @@ class FeedItemUncollapsed extends Component {
             prevState: "", 
             fieldErrors: {}, 
             clonedData: {}, 
-            failedToSave: false
+            failedToSave: false,
+            uploadedFile: undefined
         });
     }
 
@@ -105,6 +111,17 @@ class FeedItemUncollapsed extends Component {
                 clonedData: {...prevState.clonedData, [key]: value}
             }));
         }
+    }
+
+    handleFileUpload(e) {
+        const file = e.target.files[0];
+        this.setState({uploadedFile: file});
+        this.handleItemChange("attachment", file.name);
+    }
+
+    handleCancelFileUpload() {
+        this.setState({uploadedFile: undefined});
+        this.handleItemChange("attachment", "");
     }
 
     defaultFormState() {
@@ -124,6 +141,31 @@ class FeedItemUncollapsed extends Component {
     isSaveDisabled() {
         return Object.keys(this.state.fieldErrors).length !== 0 
             || (this.state.formState === "new" && !this.state.clonedData.serialNumber);
+    }
+
+    uploadedFileName() {
+        let name = "";
+        if (this.state.uploadedFile === undefined) {
+            if (this.clonedDataExists()) {
+                name = this.state.clonedData.attachment;
+            } else {
+                name = this.props.item.attachment;
+            }
+        } else {
+            name = this.state.uploadedFile.name;
+        }
+
+        return this._truncate(name);
+    }
+
+    _truncate(string) {
+        if (!string) {
+            return "";
+        }
+
+        const maxLength = 25;
+
+        return (string.length > maxLength) ? string.substr(0, maxLength-1) + '...' : string;
     }
 
     render() {
@@ -167,11 +209,14 @@ class FeedItemUncollapsed extends Component {
                 {showErrorHeader && <FeedItemErrorHeader />}
                 <FeedItemForm 
                     item={item}
+                    uploadedFileName={this.uploadedFileName()}
                     formState={this.state.formState}
                     dateFormat={DATE_FORMAT}
                     fieldErrors={this.state.fieldErrors}
                     handleItemChange={(e) => { this.handleItemChange(e.target.id, e.target.value); }}
                     handleDateChange={this.handleDateChange}
+                    handleFileUpload={this.handleFileUpload}
+                    handleCancelFileUpload={this.handleCancelFileUpload}
                 />
                 {!item.isNew && <FeedItemDefaultFooter createdOn={item.createdAt} updatedOn={item.updatedAt} footerType="uncollapsed"/>}
             </div>
