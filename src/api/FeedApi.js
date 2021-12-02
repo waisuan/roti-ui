@@ -50,5 +50,14 @@ export default {
                 console.error(err);
                 return false;
             })
+    },
+    deleteFile(id, fileName) {
+        return API.delete(`files/${id}/${fileName}`)
+            .then(_ => {
+                return true;
+            }).catch(err => {
+                console.error(err);
+                return false;
+            })
     }
 }

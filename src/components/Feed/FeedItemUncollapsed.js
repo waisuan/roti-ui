@@ -54,8 +54,7 @@ class FeedItemUncollapsed extends Component {
             this.handleCancel();
             return;
         }
-
-        // TODO handle removed files        
+    
         this.props.onSaveEdit(this.state.clonedData, this.state.uploadedFile);
         
         if (this.state.clonedData.isNew) {
@@ -65,7 +64,6 @@ class FeedItemUncollapsed extends Component {
         }
     }
 
-    // TODO handle files
     handleSaveDelete() {
         this.props.onSaveDelete();
         this.setSavingState("delete");

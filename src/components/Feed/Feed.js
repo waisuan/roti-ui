@@ -87,21 +87,18 @@ class Feed extends Component {
         if (uploadedFile) {
             const res = await API.uploadFile(updatedData.serialNumber, uploadedFile);
             if (!res) {
-                const currentData = this.state.data[index];
-                currentData.hasError = true;
-                this.updateStateData(index, currentData);
+                this.handleApiResonseErr(index);
                 return;
             }
         }
 
+        // TODO remove timeout
         setTimeout(() => {
             this.editApiHandler(updatedData).then(res => {
                 if (res) {
                     this.updateStateData(index, {...this.cleanDataRow(res)});
                 } else {
-                    const currentData = this.state.data[index];
-                    currentData.hasError = true;
-                    this.updateStateData(index, currentData);
+                    this.handleApiResonseErr(index);
                 }
             });
         }, 2000);
@@ -118,21 +115,34 @@ class Feed extends Component {
         }
     }
 
-    handleSaveDelete(index) {
-        const deletedItem = { serialNumber: this.state.data[index].serialNumber, isDeleted: true };
+    async handleSaveDelete(index) {
+        const data = this.state.data[index];
+        if (data.attachment) {
+            const res = await API.deleteFile(data.serialNumber, data.attachment);
+            if (!res) {
+                this.handleApiResonseErr(index);
+                return;
+            }
+        }
 
+        const deletedItem = { serialNumber: data.serialNumber, isDeleted: true };
+        // TODO remove timeout
         setTimeout(() => {
             API.deleteFeedItem(deletedItem.serialNumber)
             .then(res => {
                 if (res) {
                     this.updateStateData(index, deletedItem);
                 } else {
-                    const currentData = this.state.data[index];
-                    currentData.hasError = true;
-                    this.updateStateData(index, currentData);
+                    this.handleApiResonseErr(index);
                 }
             });
         }, 2000);
+    }
+
+    handleApiResonseErr(index) {
+        const currentData = this.state.data[index];
+        currentData.hasError = true;
+        this.updateStateData(index, currentData);
     }
 
     removeData(index) {
