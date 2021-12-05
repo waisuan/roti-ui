@@ -222,9 +222,11 @@ export default function FeedItemForm(props) {
                             icon={<AttachmentIcon />}
                             size="small" 
                             label={props.uploadedFileName}
-                            onDelete={props.handleCancelFileUpload} 
-                            color="primary" 
-                            disabled={isReadOnly}
+                            clickable={props.fileIsDownloadable}
+                            onClick={props.handleFileDownload}
+                            onDelete={isReadOnly ? undefined : props.handleCancelFileUpload}
+                            //onDelete={props.handleCancelFileUpload} 
+                            color="primary"
                             className="attachment"
                         />
                         :

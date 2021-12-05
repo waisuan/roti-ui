@@ -39,6 +39,15 @@ export default {
                 return null;
             })
     },
+    downloadFile(id, fileName) {
+        return API.get(`files/${id}/${fileName}`, {responseType: 'blob'})
+            .then(res => {
+                return res.data;
+            }).catch(err => {
+                console.error(err);
+                return null;
+            })
+    },
     uploadFile(id, file) {
         const formData = new FormData();
         formData.append("file", file, file.name);

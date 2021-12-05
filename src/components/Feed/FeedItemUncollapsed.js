@@ -9,19 +9,14 @@ import FeedItemForm from './FeedItemForm';
 import FeedItemProgressHeader from './FeedItemProgressHeader';
 import FeedItemErrorHeader from './FeedItemErrorHeader';
 
+import API from '../../api/FeedApi';
+
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 class FeedItemUncollapsed extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            formState: this.defaultFormState(),
-            prevState: "",
-            fieldErrors: {},
-            clonedData: {},
-            failedToSave: false,
-            uploadedFile: undefined
-        };
+        this.state = this.defaultState();
 
         this.handleCancel = this.handleCancel.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
@@ -30,6 +25,19 @@ class FeedItemUncollapsed extends Component {
         this.handleItemChange = this.handleItemChange.bind(this);
         this.handleFileUpload = this.handleFileUpload.bind(this);
         this.handleCancelFileUpload = this.handleCancelFileUpload.bind(this);
+        this.handleFileDownload = this.handleFileDownload.bind(this);
+    }
+
+    defaultState() {
+        return {
+            formState: this.defaultFormState(),
+            prevState: "",
+            fieldErrors: {},
+            clonedData: {},
+            failedToSave: false,
+            uploadedFile: undefined,
+            fileHasChanged: false,
+        };
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -50,7 +58,7 @@ class FeedItemUncollapsed extends Component {
     }
 
     handleSaveEdit() {
-        if (!this.clonedDataExists() && !this.state.uploadedFile) {
+        if (!this.clonedDataExists()) {
             this.handleCancel();
             return;
         }
@@ -86,14 +94,7 @@ class FeedItemUncollapsed extends Component {
     }
 
     resetState() {
-        this.setState({
-            formState: this.defaultFormState(), 
-            prevState: "", 
-            fieldErrors: {}, 
-            clonedData: {}, 
-            failedToSave: false,
-            uploadedFile: undefined
-        });
+        this.setState(this.defaultState());
     }
 
     handleDateChange(rawDate, fieldName) {
@@ -113,13 +114,35 @@ class FeedItemUncollapsed extends Component {
 
     handleFileUpload(e) {
         const file = e.target.files[0];
-        this.setState({uploadedFile: file});
+        this.setState({uploadedFile: file, fileHasChanged: true});
         this.handleItemChange("attachment", file.name);
     }
 
     handleCancelFileUpload() {
         this.setState({uploadedFile: undefined});
         this.handleItemChange("attachment", "");
+    }
+
+    handleFileDownload() {
+        if (!this.fileIsDownloadable()) {
+            return;
+        }
+
+        // TODO handle loading/downloading state
+        API.downloadFile(this.props.item.serialNumber, this.props.item.attachment)
+            .then(res => {
+                if (res) {
+                    // Create blob link to download
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(res);
+                    link.setAttribute('download', this.props.item.attachment);
+                
+                    // Start download
+                    link.click();
+                } else {
+                    // TODO handle failure
+                }
+            });
     }
 
     defaultFormState() {
@@ -143,14 +166,10 @@ class FeedItemUncollapsed extends Component {
 
     uploadedFileName() {
         let name = "";
-        if (this.state.uploadedFile === undefined) {
-            if (this.clonedDataExists()) {
-                name = this.state.clonedData.attachment;
-            } else {
-                name = this.props.item.attachment;
-            }
+        if (this.clonedDataExists()) {
+            name = this.state.clonedData.attachment;
         } else {
-            name = this.state.uploadedFile.name;
+            name = this.props.item.attachment;
         }
 
         return this._truncate(name);
@@ -164,6 +183,10 @@ class FeedItemUncollapsed extends Component {
         const maxLength = 25;
 
         return (string.length > maxLength) ? string.substr(0, maxLength-1) + '...' : string;
+    }
+
+    fileIsDownloadable() {
+        return Boolean(this.props.item.attachment) && !this.state.fileHasChanged;
     }
 
     render() {
@@ -208,6 +231,7 @@ class FeedItemUncollapsed extends Component {
                 <FeedItemForm 
                     item={item}
                     uploadedFileName={this.uploadedFileName()}
+                    fileIsDownloadable={this.fileIsDownloadable()}
                     formState={this.state.formState}
                     dateFormat={DATE_FORMAT}
                     fieldErrors={this.state.fieldErrors}
@@ -215,6 +239,7 @@ class FeedItemUncollapsed extends Component {
                     handleDateChange={this.handleDateChange}
                     handleFileUpload={this.handleFileUpload}
                     handleCancelFileUpload={this.handleCancelFileUpload}
+                    handleFileDownload={this.handleFileDownload}
                 />
                 {!item.isNew && <FeedItemDefaultFooter createdOn={item.createdAt} updatedOn={item.updatedAt} footerType="uncollapsed"/>}
             </div>
