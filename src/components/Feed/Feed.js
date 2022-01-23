@@ -12,13 +12,17 @@ import newData from '../../data/new_machine.json';
 class Feed extends Component {
     constructor(props) {
         super(props);
+        
+        const currPage = Number((new URLSearchParams(window.location.search)).get("page")) || 1;
+        const pageLimit = 50;
 
         this.state = { 
             data: [],
             totalDataCount: 0,
-            pageLimit: 50,
-            pageOffset: 0,
-            currPageDataCount: 50
+            pageLimit: pageLimit,
+            pageOffset: pageLimit * (currPage - 1),
+            currPageDataCount: pageLimit,
+            currPage: currPage
         };
 
         this.handleSaveEdit = this.handleSaveEdit.bind(this);
@@ -87,7 +91,7 @@ class Feed extends Component {
         if (uploadedFile) {
             const res = await API.uploadFile(updatedData.serialNumber, uploadedFile);
             if (!res) {
-                this.handleApiResonseErr(index);
+                this.handleApiResponseErr(index);
                 return;
             }
         }
@@ -98,7 +102,7 @@ class Feed extends Component {
                 if (res) {
                     this.updateStateData(index, {...this.cleanDataRow(res)});
                 } else {
-                    this.handleApiResonseErr(index);
+                    this.handleApiResponseErr(index);
                 }
             });
         }, 2000);
@@ -120,7 +124,7 @@ class Feed extends Component {
         if (data.attachment) {
             const res = await API.deleteFile(data.serialNumber, data.attachment);
             if (!res) {
-                this.handleApiResonseErr(index);
+                this.handleApiResponseErr(index);
                 return;
             }
         }
@@ -133,13 +137,13 @@ class Feed extends Component {
                 if (res) {
                     this.updateStateData(index, deletedItem);
                 } else {
-                    this.handleApiResonseErr(index);
+                    this.handleApiResponseErr(index);
                 }
             });
         }, 2000);
     }
 
-    handleApiResonseErr(index) {
+    handleApiResponseErr(index) {
         const currentData = this.state.data[index];
         currentData.hasError = true;
         this.updateStateData(index, currentData);
@@ -171,7 +175,15 @@ class Feed extends Component {
     }
 
     handlePageChange(_, p) {
-        this.setState({pageOffset: this.state.pageLimit * (p - 1)});
+        // Manually update URL to reflect page changes -- for visibility purposes.
+        const url = new URL(window.location);
+        url.searchParams.set('page', p);
+        window.history.pushState({}, '', url);
+
+        this.setState({
+            pageOffset: this.state.pageLimit * (p - 1),
+            currPage: p
+        });
     }
 
     pageCount() {
@@ -191,6 +203,7 @@ class Feed extends Component {
                     isAddDisabled={this.state.data[0]?.isNew || false}
                     pageCount={this.pageCount()}
                     currPageStats={this.currPageStats()}
+                    currPage={this.state.currPage}
                     onAdd={this.handleAdd}
                     onChangePage={this.handlePageChange}
                 />

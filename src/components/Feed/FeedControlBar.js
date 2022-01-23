@@ -31,10 +31,10 @@ export default function FeedControlBar(props) {
                 </Button>
             </div>
             <div className="feedItemControl">
-                {/* TODO change to integrate with router */}
                 <Pagination 
                     size="small"
                     color="primary"
+                    page={props.currPage}
                     count={props.pageCount}
                     showFirstButton
                     showLastButton 

@@ -9,6 +9,8 @@ import Chip from '@material-ui/core/Chip';
 export default function FeedItemForm(props) {
     const isNew = props.formState === "new";
     const isReadOnly = props.formState !== "edit" && !isNew;
+    const fileIsDownloading = props.formState === "downloading";
+    const isSaving = props.formState === "saving";
 
     return (
         <form>
@@ -221,12 +223,12 @@ export default function FeedItemForm(props) {
                         <Chip 
                             icon={<AttachmentIcon />}
                             size="small" 
-                            label={props.uploadedFileName}
+                            label={fileIsDownloading ? "Downloading..." : props.uploadedFileName}
                             clickable={props.fileIsDownloadable}
                             onClick={props.handleFileDownload}
                             onDelete={isReadOnly ? undefined : props.handleCancelFileUpload}
-                            //onDelete={props.handleCancelFileUpload} 
                             color="primary"
+                            disabled={fileIsDownloading || isSaving}
                             className="attachment"
                         />
                         :

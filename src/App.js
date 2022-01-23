@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
-import {
-    Routes,
-    Route,
-    BrowserRouter
-} from "react-router-dom";
-  
 
 import './App.css';
 import Feed from './components/Feed/Feed';
@@ -16,10 +11,14 @@ class App extends Component {
         return (
             <Container maxWidth="md">
                 <BrowserRouter>
-                    <Routes>
-                        <Route path="/" element={<Feed />} />
-                        <Route path="*" element={<NotFoundPage />} />
-                    </Routes>
+                    <Switch>
+                        <Route exact path="/">
+                            <Feed />
+                        </Route>
+                        <Route path="*">
+                            <NotFoundPage />
+                        </Route>
+                    </Switch>
                 </BrowserRouter>
             </Container>
         );

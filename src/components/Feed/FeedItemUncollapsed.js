@@ -31,22 +31,25 @@ class FeedItemUncollapsed extends Component {
     defaultState() {
         return {
             formState: this.defaultFormState(),
-            prevState: "",
+            prevFormState: "",
             fieldErrors: {},
             clonedData: {},
             failedToSave: false,
             uploadedFile: undefined,
-            fileHasChanged: false,
+            fileHasChanged: false
         };
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate(prevProps, prevState) {
         if (this.state.formState === "saving") {
             if (!prevState.failedToSave &&
                 !this.state.failedToSave && 
                 this.props.item.hasError) {
+                // This block handles changing the state after an unsuccessful save.
                 this.revertStateDueToErr();
-            } else if ((prevProps.item.version || 0) < this.props.item.version) {
+            } 
+            else if ((prevProps.item.version || 0) < this.props.item.version) {
+                // This block handles changing the state after a successful save.
                 this.resetState();
             }
         }
@@ -65,7 +68,7 @@ class FeedItemUncollapsed extends Component {
     
         this.props.onSaveEdit(this.state.clonedData, this.state.uploadedFile);
         
-        if (this.state.clonedData.isNew) {
+        if (this.state.formState === "new") {
             this.setSavingState("new");
         } else {
             this.setSavingState("edit");
@@ -80,15 +83,15 @@ class FeedItemUncollapsed extends Component {
     setSavingState(sourceAction) {
         this.setState({
             formState: "saving", 
-            prevState: sourceAction, 
+            prevFormState: sourceAction, 
             failedToSave: false
         });
     }
 
     revertStateDueToErr() {
         this.setState({
-            formState: this.state.prevState, 
-            prevState: "",
+            formState: this.state.prevFormState, 
+            prevFormState: "",
             failedToSave: true
         });
     }
@@ -128,21 +131,29 @@ class FeedItemUncollapsed extends Component {
             return;
         }
 
-        // TODO handle loading/downloading state
-        API.downloadFile(this.props.item.serialNumber, this.props.item.attachment)
-            .then(res => {
-                if (res) {
-                    // Create blob link to download
-                    const link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(res);
-                    link.setAttribute('download', this.props.item.attachment);
-                
-                    // Start download
-                    link.click();
-                } else {
-                    // TODO handle failure
-                }
-            });
+        // TODO handle errors
+        this.setState(prevState => ({
+            prevFormState: prevState.formState, 
+            formState: "downloading"
+        }), () => {
+            API.downloadFile(this.props.item.serialNumber, this.props.item.attachment)
+                .then(res => {
+                    if (res) {
+                        // Create blob link to download
+                        const link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(res);
+                        link.setAttribute('download', this.props.item.attachment);
+                    
+                        // Start download
+                        link.click();
+                    }
+
+                    this.setState(prevState => ({
+                        formState: prevState.prevFormState,
+                        prevFormState: ""
+                    }));
+                });
+        });
     }
 
     defaultFormState() {
@@ -193,7 +204,7 @@ class FeedItemUncollapsed extends Component {
         const isEditMode = this.state.formState === "edit";
         const isDelMode = this.state.formState === "delete";
         const isNew = this.state.formState === "new";
-        const isSaving = this.state.formState === "saving";
+        const isLoading = this.state.formState === "saving" || this.state.formState === "downloading";
         const showErrorHeader = this.state.failedToSave;
         const isSaveDisabled = this.isSaveDisabled();
     
@@ -213,7 +224,7 @@ class FeedItemUncollapsed extends Component {
             header = <FeedItemDeleteHeader 
                         handleCancel={this.handleCancel} 
                         handleSaveDelete={this.handleSaveDelete}/>;
-        } else if (isSaving) {
+        } else if (isLoading) {
             header = <FeedItemProgressHeader />
         } else {
             header = <FeedItemFormHeader 
@@ -224,6 +235,7 @@ class FeedItemUncollapsed extends Component {
     
         const item = this.clonedDataExists() ? this.state.clonedData : this.props.item;
         
+        // TODO maybe pass a file-specific hash instead of separate values ?
         return (
             <div>
                 {header}
