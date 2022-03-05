@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import dayjs from 'dayjs';
+import { withRouter } from 'react-router-dom';
 
 import FeedItemFormHeader from './FeedItemFormHeader';
 import FeedItemEditHeader from './FeedItemEditHeader';
@@ -200,6 +201,11 @@ class FeedItemUncollapsed extends Component {
         return Boolean(this.props.item.attachment) && !this.state.fileHasChanged;
     }
 
+    redirectToLog=()=> {
+        const path = `/log/${this.props.item.serialNumber}`;
+        this.props.history.push(path);
+    }
+
     render() {
         const isEditMode = this.state.formState === "edit";
         const isDelMode = this.state.formState === "delete";
@@ -230,7 +236,8 @@ class FeedItemUncollapsed extends Component {
             header = <FeedItemFormHeader 
                         handleEditState={() => { this.setState({formState: "edit"}); }} 
                         handleDelState={() => { this.setState({formState: "delete"}); }}
-                        handleCollapse={this.props.onCollapse}/>;
+                        handleCollapse={this.props.onCollapse}
+                        redirectToLog={this.redirectToLog} />;
         }
     
         const item = this.clonedDataExists() ? this.state.clonedData : this.props.item;
@@ -259,4 +266,4 @@ class FeedItemUncollapsed extends Component {
     }
 }
 
-export default FeedItemUncollapsed;
+export default withRouter(FeedItemUncollapsed);

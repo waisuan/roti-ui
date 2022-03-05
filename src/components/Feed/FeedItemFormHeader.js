@@ -27,7 +27,7 @@ export default function FeedItemFormHeader(props) {
                     </IconButton>
                 </Tooltip>
                 <Tooltip title="Log">
-                    <IconButton size="small" aria-label="timeline">
+                    <IconButton size="small" aria-label="timeline" onClick={props.redirectToLog}>
                         <TimelineIcon fontSize="inherit"/>
                     </IconButton>
                 </Tooltip>

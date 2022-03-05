@@ -22,6 +22,7 @@ export default function FeedControlBar(props) {
                     </span>
                 </Tooltip>
                 <span>|</span>
+                {/* TODO */}
                 <Button size="small">
                     Expand
                 </Button>

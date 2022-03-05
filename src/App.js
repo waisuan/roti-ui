@@ -5,6 +5,7 @@ import Container from '@material-ui/core/Container';
 import './App.css';
 import Feed from './components/Feed/Feed';
 import NotFoundPage from './NotFoundPage';
+import FeedLog from './components/Feed/FeedLog';
 
 class App extends Component {
     render() {
@@ -14,6 +15,9 @@ class App extends Component {
                     <Switch>
                         <Route exact path="/">
                             <Feed />
+                        </Route>
+                        <Route path="/log/:id">
+                            <FeedLog />
                         </Route>
                         <Route path="*">
                             <NotFoundPage />
