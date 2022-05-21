@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Paper from '@material-ui/core/Paper';
+import Paper from '@mui/material/Paper';
 
 import FeedItemUncollapsed from './FeedItemUncollapsed';
 import FeedItemCollapsed from './FeedItemCollapsed';

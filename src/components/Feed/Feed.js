@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 import dayjs from 'dayjs';
 
 import API from '../../api/FeedApi';

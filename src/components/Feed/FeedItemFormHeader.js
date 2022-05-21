@@ -1,9 +1,9 @@
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import TimelineIcon from '@material-ui/icons/Timeline';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import TimelineIcon from '@mui/icons-material/Timeline';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 export default function FeedItemFormHeader(props) {
     return (

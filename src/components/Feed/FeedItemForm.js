@@ -1,10 +1,9 @@
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 import DayJsUtils from '@date-io/dayjs';
-import {MuiPickersUtilsProvider, DatePicker} from '@material-ui/pickers';
-import AttachmentIcon from '@material-ui/icons/Attachment';
-import Chip from '@material-ui/core/Chip';
+import AttachmentIcon from '@mui/icons-material/Attachment';
+import Chip from '@mui/material/Chip';
 
 export default function FeedItemForm(props) {
     const isNew = props.formState === "new";
@@ -131,7 +130,7 @@ export default function FeedItemForm(props) {
                 </Grid>
             </Grid>
             <Grid container>
-                <Grid item xs>
+                {/* <Grid item xs>
                     <MuiPickersUtilsProvider utils={DayJsUtils}>
                         <DatePicker
                             id="tncDate"
@@ -170,7 +169,7 @@ export default function FeedItemForm(props) {
                             }}
                         />
                     </MuiPickersUtilsProvider>
-                </Grid>
+                </Grid> */}
                 <Grid item xs>
                     <TextField
                         id="reportedBy"
@@ -244,13 +243,11 @@ export default function FeedItemForm(props) {
                             <label htmlFor="form-item-attachment-button">
                                 <Button
                                     variant="outlined"
-                                    color="default"
                                     size="small"
                                     component="span"
                                     startIcon={<AttachmentIcon />}
                                     disabled={isReadOnly}
-                                    className="attachment"
-                                >
+                                    className="attachment">
                                     Attachment
                                 </Button>
                             </label>
