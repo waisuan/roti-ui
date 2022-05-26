@@ -1,10 +1,10 @@
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import DayJsUtils from '@date-io/dayjs';
-import {MuiPickersUtilsProvider, DatePicker} from '@material-ui/pickers';
-import AttachmentIcon from '@material-ui/icons/Attachment';
-import Chip from '@material-ui/core/Chip';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import AttachmentIcon from '@mui/icons-material/Attachment';
+import Chip from '@mui/material/Chip';
+import { DatePicker, LocalizationProvider } from '@mui/lab';
 
 export default function FeedItemForm(props) {
     const isNew = props.formState === "new";
@@ -132,44 +132,48 @@ export default function FeedItemForm(props) {
             </Grid>
             <Grid container>
                 <Grid item xs>
-                    <MuiPickersUtilsProvider utils={DayJsUtils}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             id="tncDate"
                             label="TNC Date"
                             value={props.item.tncDate}
                             format={props.dateFormat}
-                            variant="inline"
-                            inputVariant="outlined"
-                            margin="dense"
-                            autoOk
-                            className="textField"
-                            InputProps={{ readOnly: isReadOnly }}
+                            mask=""
                             readOnly={isReadOnly}
                             onChange={(date) => { 
                                 props.handleDateChange(date, "tncDate"); 
                             }}
+                            renderInput={(params) => 
+                                <TextField
+                                    className="textField"
+                                    size="small"
+                                    {...params} 
+                                />
+                            }
                         />
-                    </MuiPickersUtilsProvider>
+                    </LocalizationProvider>
                 </Grid>
                 <Grid item xs>
-                    <MuiPickersUtilsProvider utils={DayJsUtils}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             id="ppmDate"
                             label="PPM Date"
                             value={props.item.ppmDate}
                             format={props.dateFormat}
-                            variant="inline"
-                            inputVariant="outlined"
-                            margin="dense"
-                            autoOk
-                            className="textField"
-                            InputProps={{ readOnly: isReadOnly }}
+                            mask=""
                             readOnly={isReadOnly}
                             onChange={(date) => { 
                                 props.handleDateChange(date, "ppmDate"); 
                             }}
+                            renderInput={(params) => 
+                                <TextField
+                                    className="textField"
+                                    size="small"
+                                    {...params} 
+                                />
+                            }
                         />
-                    </MuiPickersUtilsProvider>
+                    </LocalizationProvider>
                 </Grid>
                 <Grid item xs>
                     <TextField
@@ -244,13 +248,11 @@ export default function FeedItemForm(props) {
                             <label htmlFor="form-item-attachment-button">
                                 <Button
                                     variant="outlined"
-                                    color="default"
                                     size="small"
                                     component="span"
                                     startIcon={<AttachmentIcon />}
                                     disabled={isReadOnly}
-                                    className="attachment"
-                                >
+                                    className="attachment">
                                     Attachment
                                 </Button>
                             </label>

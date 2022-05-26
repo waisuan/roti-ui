@@ -1,9 +1,9 @@
-import Pagination from '@material-ui/lab/Pagination';
-import Button from '@material-ui/core/Button';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
-import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
-import { Typography } from '@material-ui/core';
+import Pagination from '@mui/material/Pagination';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import { Typography } from '@mui/material';
 
 export default function FeedControlBar(props) {
     return (

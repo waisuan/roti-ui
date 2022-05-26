@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import Container from '@material-ui/core/Container';
-
+import Container from '@mui/material/Container';
+  
 import './App.css';
 import Feed from './components/Feed/Feed';
 import NotFoundPage from './NotFoundPage';
