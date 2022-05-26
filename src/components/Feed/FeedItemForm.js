@@ -1,9 +1,10 @@
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import DayJsUtils from '@date-io/dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import AttachmentIcon from '@mui/icons-material/Attachment';
 import Chip from '@mui/material/Chip';
+import { DatePicker, LocalizationProvider } from '@mui/lab';
 
 export default function FeedItemForm(props) {
     const isNew = props.formState === "new";
@@ -130,46 +131,50 @@ export default function FeedItemForm(props) {
                 </Grid>
             </Grid>
             <Grid container>
-                {/* <Grid item xs>
-                    <MuiPickersUtilsProvider utils={DayJsUtils}>
+                <Grid item xs>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             id="tncDate"
                             label="TNC Date"
                             value={props.item.tncDate}
                             format={props.dateFormat}
-                            variant="inline"
-                            inputVariant="outlined"
-                            margin="dense"
-                            autoOk
-                            className="textField"
-                            InputProps={{ readOnly: isReadOnly }}
+                            mask=""
                             readOnly={isReadOnly}
                             onChange={(date) => { 
                                 props.handleDateChange(date, "tncDate"); 
                             }}
+                            renderInput={(params) => 
+                                <TextField
+                                    className="textField"
+                                    size="small"
+                                    {...params} 
+                                />
+                            }
                         />
-                    </MuiPickersUtilsProvider>
+                    </LocalizationProvider>
                 </Grid>
                 <Grid item xs>
-                    <MuiPickersUtilsProvider utils={DayJsUtils}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             id="ppmDate"
                             label="PPM Date"
                             value={props.item.ppmDate}
                             format={props.dateFormat}
-                            variant="inline"
-                            inputVariant="outlined"
-                            margin="dense"
-                            autoOk
-                            className="textField"
-                            InputProps={{ readOnly: isReadOnly }}
+                            mask=""
                             readOnly={isReadOnly}
                             onChange={(date) => { 
                                 props.handleDateChange(date, "ppmDate"); 
                             }}
+                            renderInput={(params) => 
+                                <TextField
+                                    className="textField"
+                                    size="small"
+                                    {...params} 
+                                />
+                            }
                         />
-                    </MuiPickersUtilsProvider>
-                </Grid> */}
+                    </LocalizationProvider>
+                </Grid>
                 <Grid item xs>
                     <TextField
                         id="reportedBy"

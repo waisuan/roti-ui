@@ -72,8 +72,9 @@ class Feed extends Component {
                 dataRow[key] = value || "";
             }
         })
-        dataRow.createdAt = dayjs(dataRow.createdAt).format("DD/MM/YYYY HH:mm");
-        dataRow.updatedAt = dayjs(dataRow.updatedAt).format("DD/MM/YYYY HH:mm");
+        const dateFormat = "DD/MM/YYYY HH:mm";
+        dataRow.createdAt = dayjs(dataRow.createdAt).format(dateFormat);
+        dataRow.updatedAt = dayjs(dataRow.updatedAt).format(dateFormat);
         return dataRow;
     }
 

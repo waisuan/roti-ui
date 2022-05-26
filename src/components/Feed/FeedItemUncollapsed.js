@@ -103,6 +103,18 @@ class FeedItemUncollapsed extends Component {
 
     handleDateChange(rawDate, fieldName) {
         const date = dayjs(rawDate, DATE_FORMAT).format(DATE_FORMAT);
+        if (date === "Invalid Date") {
+            if (!this.state.fieldErrors.hasOwnProperty(fieldName)) {
+                this.setState(prevState => ({
+                    fieldErrors: {...prevState.fieldErrors, [fieldName]: date}
+                }));
+            }
+        } else if (this.state.fieldErrors.hasOwnProperty(fieldName)) {
+            const tmp = {...this.state.fieldErrors};
+            delete tmp[fieldName];
+            this.setState({fieldErrors: tmp});
+        }
+
         this.handleItemChange(fieldName, date);
     }
 
