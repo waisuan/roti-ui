@@ -15,6 +15,11 @@ import AttachmentIcon from '@mui/icons-material/Attachment';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import CancelIcon from '@mui/icons-material/Cancel';
+import SaveIcon from '@mui/icons-material/Save';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 import API from '../../api/FeedApi';
 
@@ -95,6 +100,62 @@ class FeedLog extends Component {
                             </TableRow>
                         </TableHead>
                         <TableBody>
+                            <TableRow>
+                                <TableCell colSpan={6} align="center">
+                                    <Container maxWidth="md">
+                                        <Box mb={1} sx={{ textAlign: 'right' }}>
+                                            <Typography variant="caption" color="text.secondary">
+                                                Editing...
+                                            </Typography>
+                                            <IconButton size="small" color="success">
+                                                <SaveIcon fontSize="inherit"/>
+                                            </IconButton>
+                                            <IconButton size="small" color="secondary">
+                                                <CancelIcon fontSize="inherit"/>
+                                            </IconButton>
+                                        </Box>
+                                        <form>
+                                            <Grid container spacing={1} marginBottom={1}>
+                                                <Grid item xs>
+                                                    <TextField
+                                                        label="Work Order No."
+                                                        size="small"
+                                                    />
+                                                </Grid>
+                                                <Grid item xs>
+                                                    <TextField
+                                                        label="Date"
+                                                        size="small"
+                                                    />
+                                                </Grid>
+                                                <Grid item xs>
+                                                    <TextField
+                                                        label="Type"
+                                                        size="small"
+                                                    />
+                                                </Grid>
+                                                <Grid item xs>
+                                                    <TextField
+                                                        label="Reported By"
+                                                        size="small"
+                                                    />
+                                                </Grid>
+                                            </Grid>
+                                            <Grid container>
+                                                <Grid item xs>
+                                                    <TextField 
+                                                        label="Action Taken"
+                                                        size="small"
+                                                        fullWidth
+                                                        multiline
+                                                        rows={3}
+                                                    />
+                                                </Grid>
+                                            </Grid>
+                                        </form>
+                                    </Container>
+                                </TableCell>
+                            </TableRow>
                             {this.state.data.map((row) => (
                                 this.state.currClickedRow === row.workOrderNumber
                                     ? (
