@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import dayjs from 'dayjs';
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "../../utils/WithRouter";
 
 import FeedItemFormHeader from './FeedItemFormHeader';
 import FeedItemEditHeader from './FeedItemEditHeader';
@@ -214,8 +214,7 @@ class FeedItemUncollapsed extends Component {
     }
 
     redirectToLog=()=> {
-        const path = `/log/${this.props.item.serialNumber}`;
-        this.props.history.push(path);
+        this.props.navigate(`/log/${this.props.item.serialNumber}`);
     }
 
     render() {

@@ -1,75 +1,158 @@
 import { Component } from "react";
-import { withRouter } from "react-router-dom";
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import { withRouter } from "../../utils/WithRouter";
+import dayjs from 'dayjs';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import Container from '@mui/material/Container';
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import AttachmentIcon from '@mui/icons-material/Attachment';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import CancelIcon from '@mui/icons-material/Cancel';
+
+import API from '../../api/FeedApi';
 
 class FeedLog extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            feedItemId: this.props.match.params.id
+            data: [],
+            pageLimit: 1000,
+            pageOffset: 0,
+            currClickedRow: ""
         }
+
+        this.handleCancel = this.handleCancel.bind(this);
     }
 
-    createData(name, calories, fat, carbs, protein) {
-        return { name, calories, fat, carbs, protein };
+    componentDidMount() {
+        this.reloadData();
     }
-      
+
+    reloadData() {
+        API.getFeedLog(this.props.params.id, this.state.pageLimit, this.state.pageOffset)
+            .then(data => {
+                if (data.length !== 0) {
+                    this.setState({
+                        data: this.cleanDataRows(data.history)
+                    });
+                }
+            });
+    }
+
+    cleanDataRows(dataRows) {
+        return dataRows.map(d => {
+            return this.cleanDataRow(d);
+        });
+    }
+
+    cleanDataRow(dataRow) {
+        Object.entries(dataRow).forEach(entry => {
+            const [key, value] = entry;
+            if (key === "workOrderDate") {
+                dataRow[key] = value?.length === 0 ? null : value;
+            } else {
+                dataRow[key] = value || "";
+            }
+        })
+        const dateFormat = "DD/MM/YYYY HH:mm";
+        dataRow.createdAt = dayjs(dataRow.createdAt).format(dateFormat);
+        dataRow.updatedAt = dayjs(dataRow.updatedAt).format(dateFormat);
+        return dataRow;
+    }
+    
+    handleRowClick(event, row) {
+        this.setState({currClickedRow: row.workOrderNumber});
+    }
+
+    handleCancel() {
+        this.setState({currClickedRow: ""});
+    }
 
     render() {
-        const rows = [
-            this.createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-            this.createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-            this.createData('Eclair', "02/12/2022", 16.0, 24, 6.0),
-            this.createData('Cupcake', 305, 3.7, "Evan Sia", 4.3),
-            this.createData('Gingerbread', 356, 16.0, 49, "Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
-          ];
+        const tableHeaderStyle = { bgcolor: 'primary.main', color: 'primary.contrastText' };
 
         return (
-            <div>
-                <h1>{this.state.feedItemId}</h1>
+            <Container maxWidth="xl">
+                <h1>{this.props.params.id}</h1>
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Work Order No.</TableCell>
-                                <TableCell>Date</TableCell>
-                                <TableCell>Type</TableCell>
-                                <TableCell>Reported By</TableCell>
-                                <TableCell>Action Taken</TableCell>
+                                <TableCell sx={tableHeaderStyle}>Work Order No.</TableCell>
+                                <TableCell sx={tableHeaderStyle}>Date</TableCell>
+                                <TableCell sx={tableHeaderStyle}>Type</TableCell>
+                                <TableCell sx={tableHeaderStyle}>Reported By</TableCell>
+                                <TableCell sx={tableHeaderStyle}>Action Taken</TableCell>
+                                <TableCell sx={tableHeaderStyle}>Attachment</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.map((row) => (
-                                <TableRow key={row.name} hover={true} selected={false}>
-                                    <TableCell component="th" scope="row" style={{ width: "15%"}}>
-                                        {row.name}
-                                    </TableCell>
-                                    <TableCell style={{ width: "15%"}}>
-                                        {row.calories}
-                                    </TableCell>
-                                    <TableCell style={{ width: "10%"}}>
-                                        {row.fat}
-                                    </TableCell>
-                                    <TableCell style={{ width: "15%"}}>
-                                        {row.carbs}
-                                    </TableCell>
-                                    <TableCell style={{ width: "45%" }}>
-                                        {row.protein}
-                                    </TableCell>
-                                </TableRow>
+                            {this.state.data.map((row) => (
+                                this.state.currClickedRow === row.workOrderNumber
+                                    ? (
+                                        <TableRow key={row.workOrderNumber} selected={true}>
+                                            <TableCell colSpan={6} align="center">
+                                                <Tooltip title="Edit">
+                                                    <IconButton size="small" color="primary">
+                                                        <EditIcon fontSize="inherit"/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title="Delete">
+                                                    <IconButton size="small" color="error">
+                                                        <DeleteForeverIcon fontSize="inherit"/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title="Cancel">
+                                                    <IconButton size="small" color="secondary" onClick={this.handleCancel}>
+                                                        <CancelIcon fontSize="inherit"/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </TableCell>
+                                        </TableRow>
+                                      )
+                                    : (
+                                        <Tooltip key={row.workOrderNumber} title={`Last updated: ${row.updatedAt}`} placement="right">
+                                            <TableRow key={row.workOrderNumber} hover={true} selected={false} onClick={(event) => this.handleRowClick(event, row)}>
+                                                <TableCell component="th" scope="row" sx={{ width: "10%"}}>
+                                                    {row.workOrderNumber}
+                                                </TableCell>
+                                                <TableCell sx={{ width: "10%"}}>
+                                                    {row.workOrderDate}
+                                                </TableCell>
+                                                <TableCell sx={{ width: "5%"}}>
+                                                    {row.workOrderType}
+                                                </TableCell>
+                                                <TableCell sx={{ width: "10%"}}>
+                                                    {row.reportedBy}
+                                                </TableCell>
+                                                <TableCell sx={{ width: "50%" }}>
+                                                    {row.actionTaken}
+                                                </TableCell>
+                                                <TableCell sx={{ width: "5%" }} align="center">
+                                                    {
+                                                        row.attachment ? 
+                                                        <IconButton size="small">
+                                                            <AttachmentIcon fontSize="inherit"/>
+                                                        </IconButton> : ""
+                                                    }
+                                                </TableCell>
+                                            </TableRow>
+                                        </Tooltip>
+                                      )
                             ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
-            </div>
-            );
+            </Container>
+        );
     }
 }
 

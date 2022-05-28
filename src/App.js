@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import Container from '@mui/material/Container';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
   
 import './App.css';
 import Feed from './components/Feed/Feed';
@@ -10,21 +9,15 @@ import FeedLog from './components/Feed/FeedLog';
 class App extends Component {
     render() {
         return (
-            <Container maxWidth="md">
+            <div>
                 <BrowserRouter>
-                    <Switch>
-                        <Route exact path="/">
-                            <Feed />
-                        </Route>
-                        <Route path="/log/:id">
-                            <FeedLog />
-                        </Route>
-                        <Route path="*">
-                            <NotFoundPage />
-                        </Route>
-                    </Switch>
+                    <Routes>
+                        <Route exact path="/" element={<Feed />}/>
+                        <Route path="/log/:id" element={<FeedLog />}/>
+                        <Route path="*" element={<NotFoundPage />}/>
+                    </Routes>
                 </BrowserRouter>
-            </Container>
+            </div>
         );
     }
 }

@@ -7,11 +7,11 @@ import CancelIcon from '@mui/icons-material/Cancel';
 export default function FeedItemDeleteHeader(props) {
     return (
         <div className="header-right">
-            <Typography variant="caption" color="textSecondary">
+            <Typography variant="caption" color="text.secondary">
                 Are you sure?
             </Typography>
             <Tooltip title="Save">
-                <IconButton size="small" color="primary" aria-label="save" onClick={props.handleSaveDelete}>
+                <IconButton size="small" color="success" aria-label="save" onClick={props.handleSaveDelete}>
                     <CheckCircleIcon fontSize="inherit"/>
                 </IconButton>
             </Tooltip>

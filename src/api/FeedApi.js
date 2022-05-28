@@ -39,6 +39,15 @@ export default {
                 return null;
             })
     },
+    getFeedLog(id, limit, offset) {
+        return API.get(`machines/${id}/history?page_limit=${limit}&page_offset=${offset}`)
+            .then(res => {
+                return res.data;
+            }).catch(err => {
+                console.error(err);
+                return {};
+            });
+    },
     downloadFile(id, fileName) {
         return API.get(`files/${id}/${fileName}`, {responseType: 'blob'})
             .then(res => {

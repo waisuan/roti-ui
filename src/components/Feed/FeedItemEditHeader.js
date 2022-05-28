@@ -8,13 +8,13 @@ export default function FeedItemEditHeader(props) {
     return (
         <div className="header-right">
             {!props.isNew && 
-                <Typography variant="caption" color="textSecondary">
+                <Typography variant="caption" color="text.secondary">
                     Editing...
                 </Typography>
             }
             <Tooltip title="Save">
                 <span>
-                    <IconButton size="small" color="primary" aria-label="save" disabled={props.isSaveDisabled} onClick={props.handleSaveEdit}>
+                    <IconButton size="small" color="success" aria-label="save" disabled={props.isSaveDisabled} onClick={props.handleSaveEdit}>
                         <SaveIcon fontSize="inherit"/>
                     </IconButton>
                 </span>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import Grid from '@mui/material/Grid';
 import dayjs from 'dayjs';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 
 import API from '../../api/FeedApi';
 import FeedControlBar from './FeedControlBar';
@@ -54,7 +55,7 @@ class Feed extends Component {
                         currPageDataCount: data.machines.length
                     });
                 }
-            })
+            });
     }
 
     cleanDataRows(dataRows) {
@@ -114,7 +115,7 @@ class Feed extends Component {
 
         if (targetData.isNew) {
             delete targetData.isNew;
-            return API.addFeedItem(targetData) 
+            return API.addFeedItem(targetData);
         } else {
             return API.updateFeedItem(targetData.serialNumber, targetData);
         }
@@ -226,10 +227,12 @@ class Feed extends Component {
         });
 
         return (
-            <Grid container spacing={1}>
-                {feedControlBar}
-                {feedItems}
-            </Grid>
+            <Container maxWidth="md">
+                <Grid container spacing={1}>
+                    {feedControlBar}
+                    {feedItems}
+                </Grid>
+            </Container>
         );
     }
 }
