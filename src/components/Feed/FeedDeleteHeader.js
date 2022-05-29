@@ -3,10 +3,11 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
+import Box from '@mui/material/Box';
 
-export default function FeedItemDeleteHeader(props) {
+export default function FeedDeleteHeader(props) {
     return (
-        <div className="header-right">
+        <Box sx={{ textAlign: 'right' }}>
             <Typography variant="caption" color="text.secondary">
                 Are you sure?
             </Typography>
@@ -20,6 +21,6 @@ export default function FeedItemDeleteHeader(props) {
                     <CancelIcon fontSize="inherit"/>
                 </IconButton>
             </Tooltip>
-        </div>
+        </Box>
     );
 }

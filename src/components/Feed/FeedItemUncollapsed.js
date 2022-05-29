@@ -3,8 +3,8 @@ import dayjs from 'dayjs';
 import { withRouter } from "../../utils/WithRouter";
 
 import FeedItemFormHeader from './FeedItemFormHeader';
-import FeedItemEditHeader from './FeedItemEditHeader';
-import FeedItemDeleteHeader from './FeedItemDeleteHeader';
+import FeedEditHeader from './FeedEditHeader';
+import FeedDeleteHeader from './FeedDeleteHeader';
 import FeedItemDefaultFooter from './FeedItemDefaultFooter';
 import FeedItemForm from './FeedItemForm';
 import FeedItemProgressHeader from './FeedItemProgressHeader';
@@ -227,18 +227,18 @@ class FeedItemUncollapsed extends Component {
     
         let header;
         if (isEditMode) {
-            header = <FeedItemEditHeader 
+            header = <FeedEditHeader 
                         handleCancel={this.handleCancel}
                         handleSaveEdit={this.handleSaveEdit} 
                         isSaveDisabled={isSaveDisabled}/>;
         } else if (isNew) {
-            header = <FeedItemEditHeader
+            header = <FeedEditHeader
                         isNew={isNew}
                         handleCancel={this.handleCancel}
                         handleSaveEdit={this.handleSaveEdit} 
                         isSaveDisabled={isSaveDisabled}/>;
         } else if (isDelMode) {
-            header = <FeedItemDeleteHeader 
+            header = <FeedDeleteHeader 
                         handleCancel={this.handleCancel} 
                         handleSaveDelete={this.handleSaveDelete}/>;
         } else if (isLoading) {

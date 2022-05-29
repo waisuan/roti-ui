@@ -3,13 +3,19 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
+import Box from '@mui/material/Box';
 
-export default function FeedItemEditHeader(props) {
+export default function FeedEditHeader(props) {
     return (
-        <div className="header-right">
+        <Box sx={{ textAlign: 'right' }}>
             {!props.isNew && 
                 <Typography variant="caption" color="text.secondary">
                     Editing...
+                </Typography>
+            }
+            {props.isNew && 
+                <Typography variant="caption" color="text.secondary">
+                    Creating...
                 </Typography>
             }
             <Tooltip title="Save">
@@ -22,6 +28,6 @@ export default function FeedItemEditHeader(props) {
                     <CancelIcon fontSize="inherit"/>
                 </IconButton>
             </Tooltip>
-        </div>
+        </Box>
     );
 }

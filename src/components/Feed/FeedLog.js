@@ -21,6 +21,8 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
+import FeedEditHeader from './FeedEditHeader';
+
 import API from '../../api/FeedApi';
 
 class FeedLog extends Component {
@@ -103,19 +105,9 @@ class FeedLog extends Component {
                             <TableRow>
                                 <TableCell colSpan={6} align="center">
                                     <Container maxWidth="md">
-                                        <Box mb={1} sx={{ textAlign: 'right' }}>
-                                            <Typography variant="caption" color="text.secondary">
-                                                Editing...
-                                            </Typography>
-                                            <IconButton size="small" color="success">
-                                                <SaveIcon fontSize="inherit"/>
-                                            </IconButton>
-                                            <IconButton size="small" color="secondary">
-                                                <CancelIcon fontSize="inherit"/>
-                                            </IconButton>
-                                        </Box>
+                                        <FeedEditHeader />
                                         <form>
-                                            <Grid container spacing={1} marginBottom={1}>
+                                            <Grid container spacing={1} mb={1} mt="1px">
                                                 <Grid item xs>
                                                     <TextField
                                                         label="Work Order No."
