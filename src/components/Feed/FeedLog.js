@@ -15,15 +15,14 @@ import AttachmentIcon from '@mui/icons-material/Attachment';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import CancelIcon from '@mui/icons-material/Cancel';
-import SaveIcon from '@mui/icons-material/Save';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-
-import FeedEditHeader from './FeedEditHeader';
 
 import API from '../../api/FeedApi';
+import FeedEditHeader from './FeedEditHeader';
+import FeedLogRow from "./FeedLogRow";
+import FeedLogRowActions from "./FeedLogRowActions";
+import FeedLogRowForm from "./FeedLogRowForm";
 
 class FeedLog extends Component {
     constructor(props) {
@@ -33,10 +32,12 @@ class FeedLog extends Component {
             data: [],
             pageLimit: 1000,
             pageOffset: 0,
-            currClickedRow: ""
+            currClickedRow: "",
+            currEditRow: undefined,
         }
 
         this.handleCancel = this.handleCancel.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
     }
 
     componentDidMount() {
@@ -75,12 +76,16 @@ class FeedLog extends Component {
         return dataRow;
     }
     
-    handleRowClick(event, row) {
+    handleRowClick(row) {
         this.setState({currClickedRow: row.workOrderNumber});
     }
 
     handleCancel() {
         this.setState({currClickedRow: ""});
+    }
+
+    handleEdit(row) {
+        this.setState({currEditRow: row});
     }
 
     render() {
@@ -102,105 +107,31 @@ class FeedLog extends Component {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            <TableRow>
-                                <TableCell colSpan={6} align="center">
-                                    <Container maxWidth="md">
-                                        <FeedEditHeader />
-                                        <form>
-                                            <Grid container spacing={1} mb={1} mt="1px">
-                                                <Grid item xs>
-                                                    <TextField
-                                                        label="Work Order No."
-                                                        size="small"
-                                                    />
-                                                </Grid>
-                                                <Grid item xs>
-                                                    <TextField
-                                                        label="Date"
-                                                        size="small"
-                                                    />
-                                                </Grid>
-                                                <Grid item xs>
-                                                    <TextField
-                                                        label="Type"
-                                                        size="small"
-                                                    />
-                                                </Grid>
-                                                <Grid item xs>
-                                                    <TextField
-                                                        label="Reported By"
-                                                        size="small"
-                                                    />
-                                                </Grid>
-                                            </Grid>
-                                            <Grid container>
-                                                <Grid item xs>
-                                                    <TextField 
-                                                        label="Action Taken"
-                                                        size="small"
-                                                        fullWidth
-                                                        multiline
-                                                        rows={3}
-                                                    />
-                                                </Grid>
-                                            </Grid>
-                                        </form>
-                                    </Container>
-                                </TableCell>
-                            </TableRow>
-                            {this.state.data.map((row) => (
-                                this.state.currClickedRow === row.workOrderNumber
-                                    ? (
-                                        <TableRow key={row.workOrderNumber} selected={true}>
-                                            <TableCell colSpan={6} align="center">
-                                                <Tooltip title="Edit">
-                                                    <IconButton size="small" color="primary">
-                                                        <EditIcon fontSize="inherit"/>
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Tooltip title="Delete">
-                                                    <IconButton size="small" color="error">
-                                                        <DeleteForeverIcon fontSize="inherit"/>
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Tooltip title="Cancel">
-                                                    <IconButton size="small" color="secondary" onClick={this.handleCancel}>
-                                                        <CancelIcon fontSize="inherit"/>
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </TableCell>
-                                        </TableRow>
-                                      )
-                                    : (
-                                        <Tooltip key={row.workOrderNumber} title={`Last updated: ${row.updatedAt}`} placement="right">
-                                            <TableRow key={row.workOrderNumber} hover={true} selected={false} onClick={(event) => this.handleRowClick(event, row)}>
-                                                <TableCell component="th" scope="row" sx={{ width: "10%"}}>
-                                                    {row.workOrderNumber}
-                                                </TableCell>
-                                                <TableCell sx={{ width: "10%"}}>
-                                                    {row.workOrderDate}
-                                                </TableCell>
-                                                <TableCell sx={{ width: "5%"}}>
-                                                    {row.workOrderType}
-                                                </TableCell>
-                                                <TableCell sx={{ width: "10%"}}>
-                                                    {row.reportedBy}
-                                                </TableCell>
-                                                <TableCell sx={{ width: "50%" }}>
-                                                    {row.actionTaken}
-                                                </TableCell>
-                                                <TableCell sx={{ width: "5%" }} align="center">
-                                                    {
-                                                        row.attachment ? 
-                                                        <IconButton size="small">
-                                                            <AttachmentIcon fontSize="inherit"/>
-                                                        </IconButton> : ""
-                                                    }
-                                                </TableCell>
-                                            </TableRow>
-                                        </Tooltip>
-                                      )
-                            ))}
+                            {this.state.data.map((row) => {
+                                if (this.state.currEditRow && this.state.currEditRow.workOrderNumber === row.workOrderNumber) {
+                                    return <FeedLogRowForm key={row.workOrderNumber} />
+                                } else if (this.state.currClickedRow === row.workOrderNumber) {
+                                    return <FeedLogRowActions key={row.workOrderNumber} handleCancel={(_) => this.handleCancel()} handleEdit={(_) => this.handleEdit(row)} />
+                                } else {
+                                    return <FeedLogRow 
+                                                key={row.workOrderNumber} 
+                                                row={row}
+                                                handleRowClick={(_) => this.handleRowClick(row)}
+                                            />
+                                }
+                            }
+                                // this.state.currClickedRow === row.workOrderNumber
+                                //     ? (
+                                //         <FeedLogRowActions key={row.workOrderNumber} handleCancel={(_) => this.handleCancel()} handleEdit={(_) => this.handleEdit(row)} />
+                                //       )
+                                //     : (
+                                //         <FeedLogRow 
+                                //             key={row.workOrderNumber} 
+                                //             row={row}
+                                //             handleRowClick={(_) => this.handleRowClick(row)}
+                                //         />
+                                //       )
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>
