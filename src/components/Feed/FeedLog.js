@@ -9,17 +9,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Container from '@mui/material/Container';
-import Tooltip from "@mui/material/Tooltip";
-import IconButton from "@mui/material/IconButton";
-import AttachmentIcon from '@mui/icons-material/Attachment';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import CancelIcon from '@mui/icons-material/Cancel';
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
 
 import API from '../../api/FeedApi';
-import FeedEditHeader from './FeedEditHeader';
 import FeedLogRow from "./FeedLogRow";
 import FeedLogRowActions from "./FeedLogRowActions";
 import FeedLogRowForm from "./FeedLogRowForm";
@@ -119,19 +110,7 @@ class FeedLog extends Component {
                                                 handleRowClick={(_) => this.handleRowClick(row)}
                                             />
                                 }
-                            }
-                                // this.state.currClickedRow === row.workOrderNumber
-                                //     ? (
-                                //         <FeedLogRowActions key={row.workOrderNumber} handleCancel={(_) => this.handleCancel()} handleEdit={(_) => this.handleEdit(row)} />
-                                //       )
-                                //     : (
-                                //         <FeedLogRow 
-                                //             key={row.workOrderNumber} 
-                                //             row={row}
-                                //             handleRowClick={(_) => this.handleRowClick(row)}
-                                //         />
-                                //       )
-                            )}
+                            })}
                         </TableBody>
                     </Table>
                 </TableContainer>
